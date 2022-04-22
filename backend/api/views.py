@@ -12,7 +12,7 @@ def home(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def overview(request):
-    url = 'https://example.com/api/v1/'
+    url = 'https://managewater.pythonanywhere.com/api/v1/'
     if settings.DEBUG:
         url = 'http://127.0.0.1:8000/api/v1/'
 
