@@ -25,6 +25,7 @@ class CustomUserAdmin(UserAdmin):
             'Additional information',
             {
                 'fields': (
+                    'phone',
                     'region',
                     'city',
                     'org_name',
