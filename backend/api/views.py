@@ -13,6 +13,7 @@ def home(request):
 @permission_classes([AllowAny])
 def overview(request):
     url = 'https://managewater.pythonanywhere.com/api/v1/'
+
     if settings.DEBUG:
         url = 'http://127.0.0.1:8000/api/v1/'
 
@@ -20,10 +21,9 @@ def overview(request):
         'API url': url,
 
         'Users': {
-            'Check is already user': url + 'users/is-already-user/',
-            'Check secret key': url + 'users/check/',
+            'Check': url + 'users/check/',
             'Create': url + 'users/create/',
-            'Change username': url + 'users/change-username/'
+            'Update': url + 'users/update/'
         },
 
         'Basins': {

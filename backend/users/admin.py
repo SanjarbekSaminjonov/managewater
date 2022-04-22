@@ -25,7 +25,7 @@ class CustomUserAdmin(UserAdmin):
             'Additional information',
             {
                 'fields': (
-                    'phone',
+                    'chat_id',
                     'region',
                     'city',
                     'org_name',
