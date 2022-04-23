@@ -1,29 +1,26 @@
 from aiogram import types
 from aiogram.dispatcher.filters.builtin import CommandStart
 
-from loader import dp
-from utils.backend_services import users
+from loader import dp, db
 from keyboards import default
+from states.users import UserLoginRegisterState
 
 
 @dp.message_handler(CommandStart(), state='*')
 async def bot_start(message: types.Message):
-    f_msg = await message.answer(
-        f"Salom, {message.from_user.full_name}, "
-        f"biz sizni bazadan tekshirmoqdamiz ..."
-    )
-    user_state = await users.is_already_user(message.from_user.id)
-    if user_state.get('is_done'):
-        data = user_state.get('data')
+    user_state = db.select_user(chat_id=message.from_user.id)
+
+    if user_state is None:
         await message.answer(
-            f"Salom {data.get('first_name')} {data.get('last_name')}\n"
-            f"sizga yana xizmat ko'rsatishdan mamnunmiz",
-            reply_markup=default.home_sections
+            f"🙋‍♂️ Salom {message.from_user.full_name} xush kelibsiz. \n\n"
+            f"<i>Siz bizning xizmatdan birinchi marta foydalanmoqdasiz."
+            f"Shuning uchun ro'yxatdan o'tishingiz yoki o'zingizning "
+            f"akkauntingizga kirishingiz kerak bo'ladi</i>",
+            reply_markup=default.login_register_confirm
         )
-        await f_msg.delete()
+        await UserLoginRegisterState.login_register.set()
     else:
         await message.answer(
-            f"Siz botda yangisiz, foydalanish uchun ro'yxatdan o'tishigiz kerak, "
-            f"yoki boshqa telegram akkauntdagi hisobingizga kirishingiz mumkin.",
-            reply_markup=default.login_register_confirm
+            f"🙋‍♂️ Salom yana ko'rishganimizdan xursandman!",
+            reply_markup=default.home_sections
         )

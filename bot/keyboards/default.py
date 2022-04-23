@@ -45,3 +45,12 @@ home_sections = ReplyKeyboardMarkup(
     ],
     resize_keyboard=True
 )
+
+contact = ReplyKeyboardMarkup(
+    resize_keyboard=True,
+    keyboard=[
+        [KeyboardButton(text="📱 Telefon raqamni yuborish", request_contact=True)],
+        [KeyboardButton("Eski akkauntimga kirish")],
+        [KeyboardButton("Bekor qilish")]
+    ]
+)

@@ -2,10 +2,15 @@ from aiogram.types import Message
 from aiogram.dispatcher import FSMContext
 
 from loader import dp, bot
-from utils.backend_services.users import change_username
 from utils.local_services.users import makeup_user_info
 from keyboards import default
 from states.users import UserLoginState
+
+
+@dp.message_handler(text_contains="Bekor qilish", state=UserLoginState.all_states)
+async def cancel_login_register(message: Message, state: FSMContext):
+    await message.answer("Hisobga kirish bekor qilindi", reply_markup=default.login_register_confirm)
+    await state.finish()
 
 
 @dp.message_handler(text_contains="Eski akkauntimga kirish", state='*')
