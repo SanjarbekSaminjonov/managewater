@@ -8,3 +8,8 @@ class BasinCreateState(StatesGroup):
     height = State()
     location = State()
     save_basin = State()
+
+
+class BasinsData(StatesGroup):
+    list = State()
+    detail = State()

@@ -1,6 +1,7 @@
 def makeup_basin_info(data: dict) -> str:
-    text = f"id: {data.get('id')}\n"
-    text += f"phone: {data.get('phone')}\n"
-    text += f"name: {data.get('name')}\n"
-    text += f"height: {data.get('height')}\n"
+    text = str()
+    text += f"🔵 Qurilma nomi: <b>{data.get('name')}</b>\n"
+    text += f"🟢 Qurilma id si: <b>{data.get('id')}</b>\n"
+    text += f"🟡 Telefon raqami: <b>{data.get('phone')}</b>\n"
+    text += f"🔴 Balandlik (sm): <b>{data.get('height')}</b>\n"
     return text

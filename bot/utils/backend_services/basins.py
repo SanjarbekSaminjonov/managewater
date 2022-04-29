@@ -17,7 +17,6 @@ def basic_auth(user: tuple) -> aiohttp.BasicAuth:
 
 async def add_basin(user: tuple, data: dict) -> bool:
     auth = basic_auth(user)
-    print(data)
     async with aiohttp.ClientSession(auth=auth) as session:
         async with session.post(CREATE_URL, json=data) as resp:
             if resp.status == 201:

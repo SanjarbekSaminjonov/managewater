@@ -17,7 +17,6 @@ from . import serializers
 def basin_create(request):
     request_data = request.data
     request_data['belong_to'] = request.user.id
-    print(request_data)
     serializer = serializers.BasinSerializer(data=request_data)
     if serializer.is_valid():
         serializer.save()
