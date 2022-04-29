@@ -1,4 +1,3 @@
-from email.policy import default
 from aiogram.types import Message
 from aiogram.dispatcher import FSMContext
 
@@ -40,16 +39,20 @@ async def add_basin(message: Message, state: FSMContext):
 
 @dp.message_handler(state=BasinCreateState.name)
 async def add_basin(message: Message, state: FSMContext):
-    await message.answer("Qurilmaning balandligini kiriting")
+    await message.answer("Qurilmaning balandligini kiriting (santimetr)")
     await BasinCreateState.next()
     await state.update_data({'name': message.text})
 
 
 @dp.message_handler(state=BasinCreateState.height)
 async def add_basin(message: Message, state: FSMContext):
-    await message.answer("Qurilmaning joylashuvini kiriting", reply_markup=default.location)
-    await BasinCreateState.next()
-    await state.update_data({'height': message.text})
+    try:
+        _ = float(message.text)
+        await message.answer("Qurilmaning joylashuvini kiriting", reply_markup=default.location)
+        await BasinCreateState.next()
+        await state.update_data({'height': message.text})
+    except Exception as err:
+        await message.reply("Balandlik noto'g'ri kiritildi")
 
 
 @dp.message_handler(state=BasinCreateState.location, text_contains="O'tkazib yuborish")
@@ -76,3 +79,28 @@ async def add_basin(message: Message, state: FSMContext):
         'longitude': message.location.longitude
     })
     await BasinCreateState.next()
+
+
+@dp.message_handler(text_contains="Ha", state=BasinCreateState.save_basin)
+async def add_basin(message: Message, state: FSMContext):
+    await message.answer(
+        "Qurilma qurilma ma'lumotlari saqlanmoqda . . .",
+        reply_markup=default.home_sections
+    )
+    data = await state.get_data()
+    await state.finish()
+    user = db.select_user(chat_id=message.from_user.id)
+    resp = await backend_services.basins.add_basin(user=user, data=data)
+    if resp:
+        await message.answer("Jarayon yakunlandi.")
+    else:
+        await message.answer("Ma'lumotlarni saqlashda xatolik yuz berdi")
+
+
+@dp.message_handler(text_contains="Ha", state=BasinCreateState.save_basin)
+async def add_basin(message: Message, state: FSMContext):
+    await message.answer(
+        "Qurilma qo'shish bekor qilindi",
+        reply_markup=default.home_sections
+    )
+    await state.finish()

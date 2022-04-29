@@ -17,6 +17,7 @@ from . import serializers
 def basin_create(request):
     request_data = request.data
     request_data['belong_to'] = request.user.id
+    print(request_data)
     serializer = serializers.BasinSerializer(data=request_data)
     if serializer.is_valid():
         serializer.save()
@@ -66,8 +67,10 @@ def basin_message_create(request):
 
 @api_view(['GET'])
 def basin_messages_list(request):
-    messages = models.BasinMessage.objects.filter(basin__belong_to=request.user)
-    serialized_messages = serializers.BasinMessageSerializer(messages, many=True)
+    messages = models.BasinMessage.objects.filter(
+        basin__belong_to=request.user)
+    serialized_messages = serializers.BasinMessageSerializer(
+        messages, many=True)
     return Response(serialized_messages.data, status=HTTP_200_OK)
 
 
@@ -76,7 +79,8 @@ def basin_message_detail(request, pk):
     message = models.BasinMessage.objects.filter(pk=pk).first()
     if message is not None:
         if message.basin.belong_to == request.user:
-            serialized_message = serializers.BasinMessageSerializer(message, many=False)
+            serialized_message = serializers.BasinMessageSerializer(
+                message, many=False)
             return Response(serialized_message.data, status=HTTP_200_OK)
         else:
             return Response(status=HTTP_403_FORBIDDEN)

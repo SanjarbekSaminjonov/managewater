@@ -118,7 +118,7 @@ async def register(message: Message, state: FSMContext):
             "Ro'yxatdan o'tishda xatolik bor. Qayta harakat qiling.",
             reply_markup=default.login_register_confirm
         )
-    await UserLoginRegisterState.login_register.set()
+        await UserLoginRegisterState.login_register.set()
 
 
 @dp.message_handler(state=UserRegisterState.save_user, text_contains="Yo'q")
