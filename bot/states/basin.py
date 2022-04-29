@@ -10,6 +10,6 @@ class BasinCreateState(StatesGroup):
     save_basin = State()
 
 
-class BasinsData(StatesGroup):
-    list = State()
-    detail = State()
+# class BasinsData(StatesGroup):
+#     list = State()
+#     detail = State()

@@ -3,7 +3,7 @@ from aiogram.dispatcher import FSMContext
 
 from loader import dp, db
 from utils import backend_services
-from states.basin import BasinsData
+# from states.basin import BasinsData
 from keyboards import inline
 
 
@@ -18,7 +18,6 @@ async def list_basins(message: Message, state: FSMContext):
             "Sizdagi qurilmalar ro'yxati",
             reply_markup=inline.list_of_basins(basins_list=basins)
         )
-        await BasinsData.list.set()
         await state.update_data({'basins': basins})
     else:
         await message.answer("Sizda ro'yxatdan qurilmalar yo'q")
