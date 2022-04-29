@@ -18,20 +18,36 @@ login_register_confirm = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
-login_confirm = ReplyKeyboardMarkup(
+cancel = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton("Eski akkauntimga kirish")],
         [KeyboardButton("Bekor qilish")]
     ],
     resize_keyboard=True
 )
 
-register_confirm = ReplyKeyboardMarkup(
+contact = ReplyKeyboardMarkup(
+    resize_keyboard=True,
     keyboard=[
-        [KeyboardButton("Ro'yxatdan o'tish")],
+        [
+            KeyboardButton(
+                text="📱 Telefon raqamni yuborish",
+                request_contact=True)
+        ],
         [KeyboardButton("Bekor qilish")]
-    ],
-    resize_keyboard=True
+    ]
+)
+
+location = ReplyKeyboardMarkup(
+    resize_keyboard=True,
+    keyboard=[
+        [
+            KeyboardButton(
+                text="📍 Joylashuv yuborish",
+                request_location=True)
+        ],
+        [KeyboardButton("O'tkazib yuborish")],
+        [KeyboardButton("Bekor qilish")]
+    ]
 )
 
 home_sections = ReplyKeyboardMarkup(
@@ -44,13 +60,4 @@ home_sections = ReplyKeyboardMarkup(
         ]
     ],
     resize_keyboard=True
-)
-
-contact = ReplyKeyboardMarkup(
-    resize_keyboard=True,
-    keyboard=[
-        [KeyboardButton(text="📱 Telefon raqamni yuborish", request_contact=True)],
-        [KeyboardButton("Eski akkauntimga kirish")],
-        [KeyboardButton("Bekor qilish")]
-    ]
 )

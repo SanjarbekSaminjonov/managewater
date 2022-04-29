@@ -16,6 +16,3 @@ class UserRegisterState(StatesGroup):
     password2 = State()
     save_user = State()
 
-
-class UserLoginState(StatesGroup):
-    secret_key = State()

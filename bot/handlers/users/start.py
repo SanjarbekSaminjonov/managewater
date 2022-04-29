@@ -1,4 +1,5 @@
 from aiogram import types
+from aiogram import dispatcher
 from aiogram.dispatcher.filters.builtin import CommandStart
 
 from loader import dp, db
@@ -7,9 +8,9 @@ from states.users import UserLoginRegisterState
 
 
 @dp.message_handler(CommandStart(), state='*')
-async def bot_start(message: types.Message):
+async def bot_start(message: types.Message, state: dispatcher.FSMContext):
+    await state.finish()
     user_state = db.select_user(chat_id=message.from_user.id)
-
     if user_state is None:
         await message.answer(
             f"🙋‍♂️ Salom {message.from_user.full_name} xush kelibsiz. \n\n"

@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 
 from loader import dp, db
 from utils.local_services.users import makeup_user_info
+from utils import backend_services
 from keyboards import default
 from states.users import UserLoginRegisterState, UserRegisterState
 
@@ -10,7 +11,7 @@ from states.users import UserLoginRegisterState, UserRegisterState
 @dp.message_handler(text_contains="Bekor qilish", state=UserRegisterState.all_states)
 async def cancel_login_register(message: Message, state: FSMContext):
     await message.answer("Ro'yxatdan o'tish bekor qilindi", reply_markup=default.login_register_confirm)
-    await state.finish()
+    await UserLoginRegisterState.login_register.set()
 
 
 @dp.message_handler(text_contains="Ro'yxatdan o'tish", state=UserLoginRegisterState.login_register)
@@ -24,8 +25,8 @@ async def register(message: Message):
 
 @dp.message_handler(state=UserRegisterState.username, content_types='contact')
 async def register(message: Message, state: FSMContext):
-    await message.answer("Ismingizni kiriting", reply_markup=default.login_confirm)
-    await UserRegisterState.first_name.set()
+    await message.answer("Ismingizni kiriting", reply_markup=default.cancel)
+    await UserRegisterState.next()
     await state.update_data({'username': message.contact.phone_number})
 
 
@@ -101,16 +102,23 @@ async def register(message: Message, state: FSMContext):
     await message.answer("Ma'lumotlar tizimga saqlanmoqda ...", reply_markup=None)
     data = await state.get_data()
     chat_id = message.from_user.id
-    username = data.get('username')
-    password = data.get('password')
-    db.add_user(chat_id, username, password)
     data['chat_id'] = str(chat_id)
-    print(data)
-    await message.answer(
-        "Jarayon yakunlandi, Sabr bilan ma'lumotlarni kiritganingiz uchun tashakkur. 😊",
-        reply_markup=default.home_sections
-    )
-    await state.finish()
+    resp = await backend_services.users.register(data)
+    if resp:
+        username = data.get('username')
+        password = data.get('password')
+        db.add_user(chat_id, username, password)
+        await message.answer(
+            "Jarayon yakunlandi, Sabr bilan ma'lumotlarni kiritganingiz uchun tashakkur. 😊",
+            reply_markup=default.home_sections
+        )
+        await state.finish()
+    else:
+        await message.answer(
+            "Ro'yxatdan o'tishda xatolik bor. Qayta harakat qiling.",
+            reply_markup=default.login_register_confirm
+        )
+    await UserLoginRegisterState.login_register.set()
 
 
 @dp.message_handler(state=UserRegisterState.save_user, text_contains="Yo'q")

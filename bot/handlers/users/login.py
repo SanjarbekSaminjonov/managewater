@@ -17,7 +17,7 @@ async def cancel_login_register(message: Message, state: FSMContext):
 async def login(message: Message):
     await message.answer(
         "📝 Eski hisobni tiklash uchun maxfiy kodni kiriting",
-        reply_markup=default.register_confirm
+        reply_markup=default.cancel
     )
     await UserLoginState.secret_key.set()
 
