@@ -33,15 +33,26 @@ def basins_list(request):
 
 @api_view(['GET'])
 def basin_detail(request, pk):
-    basin = models.Basin.objects.filter(pk=pk).first()
+    basin = models.Basin.objects.filter(
+        belong_to=request.user).filter(pk=pk).first()
     if basin is not None:
-        if basin.belong_to == request.user:
-            serialized_basin = serializers.BasinSerializer(basin, many=False)
-            return Response(serialized_basin.data, status=HTTP_200_OK)
-        else:
-            return Response(status=HTTP_403_FORBIDDEN)
+        serialized_basin = serializers.BasinSerializer(basin, many=False)
+        return Response(serialized_basin.data, status=HTTP_200_OK)
     else:
         return Response(status=HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+def basin_update(request, pk):
+    basin = models.Basin.objects.filter(
+        belong_to=request.user).filter(pk=pk).first()
+    if basin is not None:
+        basin.height = request.data.get('height')
+        basin.save()
+        serialized_basin = serializers.BasinSerializer(basin, many=False)
+        return Response(serialized_basin.data, status=HTTP_200_OK)
+    else:
+        return Response(status=HTTP_400_BAD_REQUEST)
 
 
 ##############################################################

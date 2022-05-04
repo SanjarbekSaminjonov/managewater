@@ -11,4 +11,5 @@ urlpatterns = [
     path('create/', views.basin_create),
     path('all/', views.basins_list),
     path('<str:pk>/', views.basin_detail),
+    path('<str:pk>/update/', views.basin_update),
 ]

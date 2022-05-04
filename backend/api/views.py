@@ -30,6 +30,7 @@ def overview(request):
             'List': url + 'basins/all/',
             'Create': url + 'basins/create/',
             'Detail': url + 'basins/basin_id/',
+            'Update': url + 'basins/basin_id/update/',
         },
 
         'Basin messages': {

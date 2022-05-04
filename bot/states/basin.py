@@ -10,6 +10,5 @@ class BasinCreateState(StatesGroup):
     save_basin = State()
 
 
-# class BasinsData(StatesGroup):
-#     list = State()
-#     detail = State()
+class BasinUpdate(StatesGroup):
+    set_height = State()

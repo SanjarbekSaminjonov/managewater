@@ -1,3 +1,4 @@
+import json
 import logging
 import aiohttp
 from data.config import API_URL
@@ -9,6 +10,10 @@ BASINS_LIST = API_URL + 'basins/all/'
 
 def BASIN_DETAIL(basin_id: str) -> str:
     return API_URL + f'basins/{basin_id}/'
+
+
+def BASIN_UPDATE(basin_id: str) -> str:
+    return API_URL + f'basins/{basin_id}/update/'
 
 
 def basic_auth(user: tuple) -> aiohttp.BasicAuth:
@@ -42,4 +47,13 @@ async def get_basin(user: tuple, basin_id: str) -> dict:
             if resp.status == 200:
                 return await resp.json()
             logging.error(await resp.text())
+            return {}
+
+
+async def set_basin_height(user: tuple, basin_id: str, data: dict) -> dict:
+    auth = basic_auth(user)
+    async with aiohttp.ClientSession(auth=auth) as session:
+        async with session.post(BASIN_UPDATE(basin_id=basin_id), json=data) as resp:
+            if resp.status == 200:
+                return await resp.json()
             return {}

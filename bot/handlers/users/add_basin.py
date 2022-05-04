@@ -2,7 +2,7 @@ from aiogram.types import Message
 from aiogram.dispatcher import FSMContext
 
 from loader import dp, db
-from utils import backend_services
+from utils import backend_services, local_services
 from utils.local_services.basins import makeup_basin_info
 from keyboards import default
 from states.basin import BasinCreateState
@@ -93,6 +93,7 @@ async def add_basin(message: Message, state: FSMContext):
     resp = await backend_services.basins.add_basin(user=user, data=data)
     if resp:
         await message.answer("Jarayon yakunlandi.")
+        await local_services.basins.get_list_of_basins(user=user, state=state, new=True)
     else:
         await message.answer("Ma'lumotlarni saqlashda xatolik yuz berdi")
 
