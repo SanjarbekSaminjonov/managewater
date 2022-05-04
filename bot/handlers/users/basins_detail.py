@@ -66,3 +66,18 @@ async def update_basin_height(message: Message, state: FSMContext):
         await message.answer("Ma'lumotlarni saqlashda xatolik yuz berdi.")
         logging.error(err)
     await state.finish()
+
+
+@dp.callback_query_handler(inline.basin_manage_callback.filter(action="location"))
+async def basin_location(call: CallbackQuery, state: FSMContext):
+    basin_id = call.data.split(':')[-1]
+    user = db.select_user(chat_id=call.message.from_user.id)
+    basin = await local_services.basins.get_basin_by_id(
+        user=user, basin_id=basin_id, state=state)
+    if bool(basin) and bool(basin.get('latitude')) and bool(basin.get('longitude')):
+        await call.message.answer_location(
+            latitude=float(basin.get('latitude')),
+            longitude=float(basin.get('longitude')))
+    else:
+        await call.message.answer("Joylashuv ma'lumotlari topilmadi.")
+    await call.answer(cache_time=60)

@@ -1,4 +1,3 @@
-from subprocess import call
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.callback_data import CallbackData
 
@@ -35,9 +34,18 @@ def manage_basin(basin_id: str):
             ],
             [
                 InlineKeyboardButton(
-                    text="Holatni ko'rish",
+                    text="Statistika ko'rish",
                     callback_data=basin_manage_callback.new(
-                        action="watch_messages",
+                        action="messages",
+                        id=basin_id
+                    )
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="Joylashuvni ko'rish",
+                    callback_data=basin_manage_callback.new(
+                        action="location",
                         id=basin_id
                     )
                 )

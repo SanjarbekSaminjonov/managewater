@@ -66,6 +66,9 @@ def basin_message_create(request):
         serializer.save()
         basin_id = request.data.get('basin')
         basin = models.Basin.objects.filter(pk=basin_id).first()
+        basin.latitude = request.data.get('latitude')
+        basin.longitude = request.data.get('longitude')
+        basin.save()
         data = {
             'request': 'success',
             'height': basin.height,

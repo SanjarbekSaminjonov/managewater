@@ -32,7 +32,7 @@ async def add_basin(message: Message, state: FSMContext):
 
 @dp.message_handler(state=BasinCreateState.phone)
 async def add_basin(message: Message, state: FSMContext):
-    await message.answer("Qurilmaga ism o'ylab toping")
+    await message.answer("Qurilmaga nom bering")
     await BasinCreateState.next()
     await state.update_data({'phone': message.text})
 
