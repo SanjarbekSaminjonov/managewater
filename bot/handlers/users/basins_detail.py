@@ -62,7 +62,7 @@ async def update_basin_height(message: Message, state: FSMContext):
             text = local_services.basins.makeup_basin_info(resp)
             await msg.edit_text(text)
             await msg.edit_reply_markup(inline.manage_basin(basin_id=basin_id))
-            await state.finish()
     except Exception as err:
         await message.answer("Ma'lumotlarni saqlashda xatolik yuz berdi.")
         logging.error(err)
+    await state.finish()
