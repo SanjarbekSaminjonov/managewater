@@ -1,3 +1,4 @@
+from distutils.command.build_py import build_py
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 yes_no_buttons = ReplyKeyboardMarkup(
@@ -61,3 +62,11 @@ home_sections = ReplyKeyboardMarkup(
     ],
     resize_keyboard=True
 )
+
+
+def buttons_of_list(items: list):
+    buttons = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    for item in items:
+        buttons.insert(KeyboardButton(text=item))
+    buttons.insert(KeyboardButton("Bekor qilish"))
+    return buttons
