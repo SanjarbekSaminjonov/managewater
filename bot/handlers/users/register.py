@@ -1,3 +1,4 @@
+from email import message
 from tkinter import E
 from aiogram.types import Message, CallbackQuery
 from aiogram.dispatcher import FSMContext
@@ -121,6 +122,7 @@ async def register(call: CallbackQuery, state: FSMContext):
         if len(password) < 4 or len(password) > 6:
             await call.answer("Parol uzunligi noto'g'ri!", show_alert=True)
         else:
+            await call.message.edit_reply_markup()
             await call.message.answer(
                 text=local_services.users.makeup_user_info(data=data) +
                 "\n\nBarcha ma'lumotlar to'g'rimi?",

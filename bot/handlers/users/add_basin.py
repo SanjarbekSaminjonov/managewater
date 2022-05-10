@@ -83,7 +83,7 @@ async def add_basin(message: Message, state: FSMContext):
 
 @dp.message_handler(text_contains="Ha", state=BasinCreateState.save_basin)
 async def add_basin(message: Message, state: FSMContext):
-    await message.answer(
+    msg = await message.answer(
         "Qurilma qurilma ma'lumotlari saqlanmoqda . . .",
         reply_markup=default.home_sections
     )
@@ -92,7 +92,7 @@ async def add_basin(message: Message, state: FSMContext):
     user = db.select_user(chat_id=message.from_user.id)
     resp = await backend_services.basins.add_basin(user=user, data=data)
     if resp:
-        await message.answer("Jarayon yakunlandi.")
+        await msg.edit_text("Jarayon yakunlandi.")
         await local_services.basins.get_list_of_basins(user=user, state=state, new=True)
     else:
         await message.answer("Ma'lumotlarni saqlashda xatolik yuz berdi")
