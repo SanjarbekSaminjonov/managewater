@@ -14,7 +14,7 @@ async def bot_start(message: types.Message, state: dispatcher.FSMContext):
     if user_state is None:
         await message.answer(
             f"🙋‍♂️ Salom {message.from_user.full_name} xush kelibsiz. \n\n"
-            f"<i>Siz bizning xizmatdan birinchi marta foydalanmoqdasiz."
+            f"<i>Siz bizning xizmatdan birinchi marta foydalanmoqdasiz. "
             f"Shuning uchun ro'yxatdan o'tishingiz yoki o'zingizning "
             f"akkauntingizga kirishingiz kerak bo'ladi</i>",
             reply_markup=default.login_register_confirm

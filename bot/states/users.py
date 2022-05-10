@@ -12,7 +12,5 @@ class UserRegisterState(StatesGroup):
     region = State()
     city = State()
     org_name = State()
-    password1 = State()
-    password2 = State()
+    password = State()
     save_user = State()
-
