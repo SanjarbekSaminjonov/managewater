@@ -91,11 +91,13 @@ async def add_basin(message: Message, state: FSMContext):
     await state.finish()
     user = db.select_user(chat_id=message.from_user.id)
     resp = await backend_services.basins.add_basin(user=user, data=data)
-    if resp:
+    if resp == 201:
         await msg.edit_text("Jarayon yakunlandi.")
         await local_services.basins.get_list_of_basins(user=user, state=state, new=True)
+    elif resp == 400:
+        await msg.edit_text("Bu qurilma allaqachon ro'yxatdan o'tkazilgan.")
     else:
-        await message.answer("Ma'lumotlarni saqlashda xatolik yuz berdi")
+        await msg.edit_text("Ma'lumotlarni saqlashda xatolik yuz berdi")
 
 
 @dp.message_handler(text_contains="Ha", state=BasinCreateState.save_basin)

@@ -6,7 +6,8 @@ from rest_framework.status import (
     HTTP_201_CREATED,
     HTTP_400_BAD_REQUEST,
     HTTP_403_FORBIDDEN,
-    HTTP_404_NOT_FOUND
+    HTTP_404_NOT_FOUND,
+    HTTP_406_NOT_ACCEPTABLE
 )
 
 from basins import models
@@ -21,7 +22,10 @@ def basin_create(request):
     if serializer.is_valid():
         serializer.save()
         return Response(status=HTTP_201_CREATED)
-    return Response(status=HTTP_400_BAD_REQUEST)
+    basin_id = request_data.get('id')
+    if models.Basin.objects.filter(pk=basin_id).exists():
+        return Response(status=HTTP_400_BAD_REQUEST)
+    return Response(status=HTTP_406_NOT_ACCEPTABLE)
 
 
 @api_view(['GET'])
