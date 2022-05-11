@@ -15,13 +15,13 @@ async def list_basins(message: Message, state: FSMContext):
     try:
         basins = await local_services.basins.get_list_of_basins(user=user, state=state)
         if len(basins):
-            await msg.edit_text("Sizdagi qurilmalar ro'yxati")
-            await msg.edit_reply_markup(reply_markup=inline.list_of_basins(basins))
+            await msg.edit_text(
+                "Sizdagi qurilmalar ro'yxati", reply_markup=inline.list_of_basins(basins))
         else:
-            await message.answer("Sizda ro'yxatdan qurilmalar yo'q")
+            await msg.edit_text("Sizda ro'yxatdan qurilmalar yo'q")
     except Exception as err:
         logging.error(err)
-        await message.answer("Ma'lumotlani olishning imkoni bo'lmadi")
+        await msg.edit_text("Ma'lumotlani olishning imkoni bo'lmadi")
 
 
 @dp.callback_query_handler(inline.basins_list_callback.filter(sep="basin"))
@@ -32,11 +32,10 @@ async def select_basin(call: CallbackQuery, state: FSMContext):
         user=user, basin_id=basin_id, state=state)
     if bool(basin):
         text = local_services.basins.makeup_basin_info(basin)
-        await call.message.edit_text(text)
-        await call.message.edit_reply_markup(inline.manage_basin(basin_id=basin_id))
+        await call.message.edit_text(text, reply_markup=inline.manage_basin(basin_id=basin_id))
     else:
         await call.message.edit_text("Ushbu qurilma topilmadi")
-    await call.answer(cache_time=60)
+    await call.answer(cache_time=1)
 
 
 @dp.callback_query_handler(inline.basin_manage_callback.filter(action="update_height"))
@@ -45,7 +44,7 @@ async def update_basin_height(call: CallbackQuery, state: FSMContext):
     await state.update_data({'current_basin_id': basin_id})
     await call.message.answer("Balandlikni kiriting (sm)")
     await BasinUpdate.set_height.set()
-    await call.answer(cache_time=60)
+    await call.answer(cache_time=1)
 
 
 @dp.message_handler(state=BasinUpdate.set_height)
@@ -63,7 +62,7 @@ async def update_basin_height(message: Message, state: FSMContext):
             await msg.edit_text(text)
             await msg.edit_reply_markup(inline.manage_basin(basin_id=basin_id))
     except Exception as err:
-        await message.answer("Ma'lumotlarni saqlashda xatolik yuz berdi.")
+        await msg.edit_text("Ma'lumotlarni saqlashda xatolik yuz berdi.")
         logging.error(err)
     await state.finish()
 
@@ -80,4 +79,19 @@ async def basin_location(call: CallbackQuery, state: FSMContext):
             longitude=float(basin.get('longitude')))
     else:
         await call.message.answer("Joylashuv ma'lumotlari topilmadi.")
-    await call.answer(cache_time=60)
+    await call.answer(cache_time=2)
+
+
+@dp.callback_query_handler(inline.basin_manage_callback.filter(action="back_to_basins"))
+async def back_to_basins_list(call: CallbackQuery, state: FSMContext):
+    user = db.select_user(chat_id=call.from_user.id)
+    try:
+        basins = await local_services.basins.get_list_of_basins(user=user, state=state)
+        if len(basins):
+            await call.message.edit_text(
+                "Sizdagi qurilmalar ro'yxati", reply_markup=inline.list_of_basins(basins))
+        else:
+            await call.message.edit_text("Sizda ro'yxatdan qurilmalar yo'q")
+    except Exception as err:
+        logging.error(err)
+        await call.message.edit_text("Ma'lumotlani olishning imkoni bo'lmadi")

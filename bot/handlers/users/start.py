@@ -10,6 +10,7 @@ from states.users import UserLoginRegisterState
 @dp.message_handler(CommandStart(), state='*')
 async def bot_start(message: types.Message, state: dispatcher.FSMContext):
     await state.finish()
+    await state.reset_data()
     user_state = db.select_user(chat_id=message.from_user.id)
     if user_state is None:
         await message.answer(

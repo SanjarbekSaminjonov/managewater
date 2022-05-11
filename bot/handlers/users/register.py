@@ -15,11 +15,12 @@ async def cancel_login_register(message: Message, state: FSMContext):
 
 
 @dp.message_handler(text_contains="Ro'yxatdan o'tish", state=UserLoginRegisterState.login_register)
-async def register(message: Message):
+async def register(message: Message, state: FSMContext):
     await message.answer(
         "📝 Ro'yxatga olish boshlandi \n\nTelefon raqamingizni yuboring",
         reply_markup=default.contact
     )
+    await state.reset_data()
     await UserRegisterState.username.set()
 
 
@@ -81,7 +82,7 @@ async def register(message: Message, state: FSMContext):
     password_text += "Parol:"
     await message.answer(
         text=password_text, reply_markup=inline.numbers_buttons)
-    await state.update_data({'org_name': message.text})
+    await state.update_data({'org_name': message.text, 'show_password': False})
     await UserRegisterState.next()
 
 
@@ -89,29 +90,26 @@ async def register(message: Message, state: FSMContext):
 async def register(call: CallbackQuery, state: FSMContext):
     call_data = call.data
     data = await state.get_data()
-    password = data.get('password')
+    show_password = data.get('show_password')
+    password = data.get('password', str())
     password_text = "Barcha ma'lumotlaringiz xavfsizligi uchun parol kiriting.\n"
     password_text += "<i>Parol uzunligi 4 - 6 xonali bo'lishi lozim</i>\n\n"
     if call_data.isdigit():
-        if password is None:
-            password = call_data
-        else:
-            password += call_data
-        password_text += f"Parol: <b>{'*' * len(password)}</b>"
+        password += call_data
+        password_text += f"Parol: <b>{password if show_password else '*' * len(password)}</b>"
         await call.message.edit_text(text=password_text, reply_markup=inline.numbers_buttons)
         await state.update_data({"password": password})
 
     elif call_data == "show":
-        if password is None:
-            password_text += "Parol:"
-        else:
-            password_text += f"Parol: <b>{password}</b>"
+        show_password = not show_password
+        password_text += f"Parol: <b>{password if show_password else '*' * len(password)}</b>"
         await call.message.edit_text(text=password_text, reply_markup=inline.numbers_buttons)
+        await state.update_data({"show_password": show_password})
 
     elif call_data == "clear":
         if len(password) > 0:
             password = password[:-1]
-            password_text += f"Parol: <b>{'*' * len(password)}</b>"
+            password_text += f"Parol: <b>{password if show_password else '*' * len(password)}</b>"
             await call.message.edit_text(text=password_text, reply_markup=inline.numbers_buttons)
             await state.update_data({"password": password})
 
@@ -119,7 +117,7 @@ async def register(call: CallbackQuery, state: FSMContext):
         if len(password) < 4 or len(password) > 6:
             await call.answer("Parol uzunligi noto'g'ri!", show_alert=True)
         else:
-            await call.message.edit_reply_markup()
+            await call.message.delete()
             await call.message.answer(
                 text=local_services.users.makeup_user_info(data=data) +
                 "\n\nBarcha ma'lumotlar to'g'rimi?",
@@ -145,7 +143,6 @@ async def register(message: Message, state: FSMContext):
             "Jarayon yakunlandi, Sabr bilan ma'lumotlarni kiritganingiz uchun tashakkur. 😊",
             reply_markup=default.home_sections
         )
-        await state.reset_data()
         await state.finish()
     else:
         await message.answer(
@@ -153,12 +150,14 @@ async def register(message: Message, state: FSMContext):
             reply_markup=default.login_register_confirm
         )
         await UserLoginRegisterState.login_register.set()
+    await state.reset_data()
 
 
 @dp.message_handler(state=UserRegisterState.save_user, text_contains="Yo'q")
-async def register(message: Message):
+async def register(message: Message, state: FSMContext):
     await message.answer(
         "Ro'yxatdan o'tish yakunlanmadi. Qayta harakat qiling.",
         reply_markup=default.login_register_confirm
     )
     await UserLoginRegisterState.login_register.set()
+    await state.reset_data()

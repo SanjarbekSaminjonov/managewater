@@ -43,7 +43,7 @@ numbers_buttons = InlineKeyboardMarkup(
         ],
         [
             InlineKeyboardButton(
-                text="✅ Tastiqlash", callback_data="submit"),
+                text="✅ Tasdiqlash", callback_data="submit"),
         ]
     ]
 )
@@ -68,7 +68,7 @@ def manage_basin(basin_id: str):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Balandlikni o'zgartirish",
+                    text="⚙️ Balandlikni o'zgartirish",
                     callback_data=basin_manage_callback.new(
                         action="update_height",
                         id=basin_id
@@ -77,7 +77,7 @@ def manage_basin(basin_id: str):
             ],
             [
                 InlineKeyboardButton(
-                    text="Statistika ko'rish",
+                    text="📊 Statistika ko'rish",
                     callback_data=basin_manage_callback.new(
                         action="messages",
                         id=basin_id
@@ -86,9 +86,18 @@ def manage_basin(basin_id: str):
             ],
             [
                 InlineKeyboardButton(
-                    text="Joylashuvni ko'rish",
+                    text="📍 Joylashuvni ko'rish",
                     callback_data=basin_manage_callback.new(
                         action="location",
+                        id=basin_id
+                    )
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="🔙 Qurilmalar ro'yxatiqa",
+                    callback_data=basin_manage_callback.new(
+                        action="back_to_basins",
                         id=basin_id
                     )
                 )

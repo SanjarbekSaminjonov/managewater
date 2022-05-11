@@ -1,4 +1,4 @@
-from select import select
+from aiogram.dispatcher import FSMContext
 from aiogram import types
 
 from loader import dp, db
@@ -8,7 +8,7 @@ from states.users import UserLoginRegisterState
 
 # Echo bot
 @dp.message_handler(state=None)
-async def bot_echo(message: types.Message):
+async def bot_echo(message: types.Message, state: FSMContext):
     user_state = db.select_user(chat_id=message.from_user.id)
     if user_state is None:
         await message.answer(
@@ -20,5 +20,6 @@ async def bot_echo(message: types.Message):
         )
         await UserLoginRegisterState.login_register.set()
     else:
-        await message.answer("Dastur yangilandi", reply_markup=default.home_sections)
+        await message.answer("Quyidagi bo'limlardan birini tanlang", reply_markup=default.home_sections)
     await message.delete()
+    await state.reset_data()

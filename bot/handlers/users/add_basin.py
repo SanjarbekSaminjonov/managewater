@@ -1,3 +1,4 @@
+import logging
 from aiogram.types import Message
 from aiogram.dispatcher import FSMContext
 
@@ -75,8 +76,8 @@ async def add_basin(message: Message, state: FSMContext):
         reply_markup=default.yes_no_buttons
     )
     await state.update_data({
-        'latitude': message.location.latitude,
-        'longitude': message.location.longitude
+        "latitude": message.location.latitude,
+        "longitude": message.location.longitude
     })
     await BasinCreateState.next()
 
@@ -84,20 +85,27 @@ async def add_basin(message: Message, state: FSMContext):
 @dp.message_handler(text_contains="Ha", state=BasinCreateState.save_basin)
 async def add_basin(message: Message, state: FSMContext):
     msg = await message.answer(
-        "Qurilma qurilma ma'lumotlari saqlanmoqda . . .",
-        reply_markup=default.home_sections
+        "Qurilma qurilma ma'lumotlari saqlanmoqda . . ."
     )
     data = await state.get_data()
-    await state.finish()
     user = db.select_user(chat_id=message.from_user.id)
-    resp = await backend_services.basins.add_basin(user=user, data=data)
-    if resp == 201:
-        await msg.edit_text("Jarayon yakunlandi.")
-        await local_services.basins.get_list_of_basins(user=user, state=state, new=True)
-    elif resp == 400:
-        await msg.edit_text("Bu qurilma allaqachon ro'yxatdan o'tkazilgan.")
-    else:
-        await msg.edit_text("Ma'lumotlarni saqlashda xatolik yuz berdi")
+    try:
+        resp = await backend_services.basins.add_basin(user=user, data=data)
+        await msg.delete()
+        if resp == 201:
+            await message.answer("Jarayon yakunlandi.", reply_markup=default.home_sections)
+            await local_services.basins.get_list_of_basins(user=user, state=state, new=True)
+        elif resp == 400:
+            await message.answer(
+                "Bu qurilma allaqachon ro'yxatdan o'tkazilgan.", reply_markup=default.home_sections)
+        else:
+            await message.answer(
+                "Ma'lumotlarni saqlashda xatolik yuz berdi", reply_markup=default.home_sections)
+    except Exception as err:
+        logging.error(err)
+        await message.answer(
+            "Ma'lumotlarni saqlashda xatolik yuz berdi", reply_markup=default.home_sections)
+    await state.finish()
 
 
 @dp.message_handler(text_contains="Ha", state=BasinCreateState.save_basin)
