@@ -14,8 +14,7 @@ async def bot_echo(message: types.Message, state: FSMContext):
         await message.answer(
             f"🙋‍♂️ Xurmatli {message.from_user.full_name}. \n\n"
             f"<i>Siz botda ro'yxatdan o'tmagansiz.\n"
-            f"Shuning uchun ro'yxatdan o'tishingiz yoki o'zingizning "
-            f"akkauntingizga kirishingiz kerak bo'ladi</i>",
+            f"Shuning uchun ro'yxatdan o'tishingiz kerak bo'ladi </i>",
             reply_markup=default.login_register_confirm
         )
         await UserLoginRegisterState.login_register.set()

@@ -24,7 +24,9 @@ async def add_basin(message: Message):
 @dp.message_handler(state=BasinCreateState.id)
 async def add_basin(message: Message, state: FSMContext):
     if len(message.text) == 11:
-        await message.answer("Qurilmadagi telefon raqamni kiriting")
+        await message.answer(
+            "Qurilmadagi telefon raqamni kiriting\n" +
+            "Mison uchun: <code><i>+998901234567</i></code>")
         await BasinCreateState.next()
         await state.update_data({'id': message.text})
     else:

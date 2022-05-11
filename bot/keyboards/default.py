@@ -14,7 +14,7 @@ yes_no_buttons = ReplyKeyboardMarkup(
 login_register_confirm = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton("Ro'yxatdan o'tish")],
-        [KeyboardButton("Eski akkauntimga kirish")]
+        # [KeyboardButton("Eski akkauntimga kirish")]
     ],
     resize_keyboard=True
 )
@@ -43,10 +43,10 @@ location = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(
-                text="📍 Joylashuv yuborish",
+                text="📍 Qurilma joylashuvini yuborish",
                 request_location=True)
         ],
-        [KeyboardButton("O'tkazib yuborish")],
+        [KeyboardButton("Tashlab ketish")],
         [KeyboardButton("Bekor qilish")]
     ]
 )

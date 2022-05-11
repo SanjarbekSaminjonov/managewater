@@ -77,7 +77,7 @@ def manage_basin(basin_id: str):
             ],
             [
                 InlineKeyboardButton(
-                    text="📊 Statistika ko'rish",
+                    text="📊 Statistikani ko'rish",
                     callback_data=basin_manage_callback.new(
                         action="messages",
                         id=basin_id
@@ -95,7 +95,7 @@ def manage_basin(basin_id: str):
             ],
             [
                 InlineKeyboardButton(
-                    text="🔙 Qurilmalar ro'yxatiqa",
+                    text="🔙 Qurilmalar ro'yxati",
                     callback_data=basin_manage_callback.new(
                         action="back_to_basins",
                         id=basin_id
