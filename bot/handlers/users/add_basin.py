@@ -58,7 +58,7 @@ async def add_basin(message: Message, state: FSMContext):
         await message.reply("Balandlik noto'g'ri kiritildi")
 
 
-@dp.message_handler(state=BasinCreateState.location, text_contains="O'tkazib yuborish")
+@dp.message_handler(state=BasinCreateState.location, text_contains="Tashlab ketish")
 async def add_basin(message: Message, state: FSMContext):
     data = await state.get_data()
     await message.answer(
