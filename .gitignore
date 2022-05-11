@@ -156,3 +156,4 @@ staticfiles/
 
 # Telegram bot
 main.db
+logs/
