@@ -1,10 +1,7 @@
-from email import message
-from tkinter import E
 from aiogram.types import Message, CallbackQuery
 from aiogram.dispatcher import FSMContext
 
 from loader import dp, db
-from utils.local_services.users import makeup_user_info
 from utils import backend_services, local_services
 from keyboards import default, inline
 from states.users import UserLoginRegisterState, UserRegisterState
