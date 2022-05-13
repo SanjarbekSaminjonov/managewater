@@ -8,7 +8,3 @@ class BasinCreateState(StatesGroup):
     height = State()
     location = State()
     save_basin = State()
-
-
-class BasinUpdate(StatesGroup):
-    set_height = State()

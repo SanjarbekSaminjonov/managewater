@@ -5,7 +5,6 @@ from aiogram.dispatcher import FSMContext
 from loader import dp, db
 from utils import backend_services, local_services
 from keyboards import inline
-from states.basin import BasinUpdate
 
 
 @dp.message_handler(text_contains="Mening qurilmalarim")
@@ -27,7 +26,7 @@ async def list_basins(message: Message, state: FSMContext):
 @dp.callback_query_handler(inline.basins_list_callback.filter(sep="basin"))
 async def select_basin(call: CallbackQuery, state: FSMContext):
     basin_id = call.data.split(':')[-1]
-    user = db.select_user(chat_id=call.message.from_user.id)
+    user = db.select_user(chat_id=call.from_user.id)
     basin = await local_services.basins.get_basin_by_id(
         user=user, basin_id=basin_id, state=state)
     if bool(basin):
@@ -41,36 +40,75 @@ async def select_basin(call: CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(inline.basin_manage_callback.filter(action="update_height"))
 async def update_basin_height(call: CallbackQuery, state: FSMContext):
     basin_id = call.data.split(':')[-1]
-    await state.update_data({'current_basin_id': basin_id})
-    await call.message.answer("Balandlikni kiriting (sm)")
-    await BasinUpdate.set_height.set()
+    user = db.select_user(chat_id=call.from_user.id)
+    basin = await local_services.basins.get_basin_by_id(
+        user=user, basin_id=basin_id, state=state)
+    basin_height = basin.get('height')
+    await state.update_data({basin_id: basin_height})
+    await call.message.edit_reply_markup(inline.update_height_plus_minus(basin_id))
     await call.answer(cache_time=1)
 
 
-@dp.message_handler(state=BasinUpdate.set_height)
-async def update_basin_height(message: Message, state: FSMContext):
-    user = db.select_user(chat_id=message.from_user.id)
-    msg = await message.answer("Balandlik sozlanmoqda . . .")
-    try:
-        _ = float(message.text)
-        data = await state.get_data()
-        basin_id = data.get('current_basin_id')
-        resp = await backend_services.basins.set_basin_height(
-            user=user, basin_id=basin_id, data={'height': message.text})
-        if bool(resp):
-            text = local_services.basins.makeup_basin_info(resp)
-            await msg.edit_text(text)
-            await msg.edit_reply_markup(inline.manage_basin(basin_id=basin_id))
-    except Exception as err:
-        await msg.edit_text("Ma'lumotlarni saqlashda xatolik yuz berdi.")
-        logging.error(err)
-    await state.finish()
+@dp.callback_query_handler(inline.basin_update_height_callback.filter(sep="update_height"))
+async def update_basin_height(call: CallbackQuery, state: FSMContext):
+    data = call.data.split(':')
+    basin_id = data[-2]
+    value = data[-1]
+    if value == "save":
+        pass
+    elif value == "cancel":
+        user = db.select_user(chat_id=call.from_user.id)
+        basin = await local_services.basins.get_basin_by_id(
+            user=user, basin_id=basin_id, state=state)
+        if bool(basin):
+            text = local_services.basins.makeup_basin_info(basin)
+            await call.message.edit_text(text, reply_markup=inline.manage_basin(basin_id=basin_id))
+    else:
+        try:
+            user = db.select_user(chat_id=call.from_user.id)
+            basin = await local_services.basins.get_basin_by_id(
+                user=user, basin_id=basin_id, state=state)
+            if bool(basin):
+                data = await state.get_data()
+                if data.get(basin_id) is not None:
+                    basin_height = data.get(basin_id)
+                else:
+                    basin_height = basin.get('height')
+                    await state.update_data({basin_id: basin_height})
+                basin_height = float(basin_height) + int(value)
+                basin['height'] = basin_height
+                await state.update_data({basin_id: basin_height})
+                await call.message.edit_text(
+                    local_services.basins.makeup_basin_info(basin),
+                    reply_markup=inline.update_height_plus_minus(basin_id))
+        except Exception as err:
+            print(err)
+
+
+# @dp.message_handler(state=BasinUpdate.set_height)
+# async def update_basin_height(message: Message, state: FSMContext):
+#     user = db.select_user(chat_id=message.from_user.id)
+#     msg = await message.answer("Balandlik sozlanmoqda . . .")
+#     try:
+#         _ = float(message.text)
+#         data = await state.get_data()
+#         basin_id = data.get('current_basin_id')
+#         resp = await backend_services.basins.set_basin_height(
+#             user=user, basin_id=basin_id, data={'height': message.text})
+#         if bool(resp):
+#             text = local_services.basins.makeup_basin_info(resp)
+#             await msg.edit_text(text)
+#             await msg.edit_reply_markup(inline.manage_basin(basin_id=basin_id))
+#     except Exception as err:
+#         await msg.edit_text("Ma'lumotlarni saqlashda xatolik yuz berdi.")
+#         logging.error(err)
+#     await state.finish()
 
 
 @dp.callback_query_handler(inline.basin_manage_callback.filter(action="location"))
 async def basin_location(call: CallbackQuery, state: FSMContext):
     basin_id = call.data.split(':')[-1]
-    user = db.select_user(chat_id=call.message.from_user.id)
+    user = db.select_user(chat_id=call.from_user.id)
     basin = await local_services.basins.get_basin_by_id(
         user=user, basin_id=basin_id, state=state)
     if bool(basin) and bool(basin.get('latitude')) and bool(basin.get('longitude')):

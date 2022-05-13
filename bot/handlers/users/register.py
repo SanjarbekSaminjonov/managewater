@@ -17,7 +17,7 @@ async def cancel_login_register(message: Message, state: FSMContext):
 @dp.message_handler(text_contains="Ro'yxatdan o'tish", state=UserLoginRegisterState.login_register)
 async def register(message: Message, state: FSMContext):
     await message.answer(
-        "📝 Ro'yxatga olish boshlandi \n\nTelefon raqamingizni yuboring",
+        "📝 Ro'yxatga olish boshlandi \n\nQuyidagi tugma orqali telefon raqamingizni yuboring",
         reply_markup=default.contact
     )
     await state.reset_data()
@@ -91,7 +91,7 @@ async def register(call: CallbackQuery, state: FSMContext):
     call_data = call.data
     data = await state.get_data()
     show_password = data.get('show_password')
-    password = data.get('password', str())
+    password = data.get('password', '')
     password_text = "Barcha ma'lumotlaringiz xavfsizligi uchun parol kiriting.\n"
     password_text += "<i>Parol uzunligi 4 - 6 xonali bo'lishi lozim</i>\n\n"
     if call_data.isdigit():
@@ -102,8 +102,9 @@ async def register(call: CallbackQuery, state: FSMContext):
 
     elif call_data == "show":
         show_password = not show_password
-        password_text += f"Parol: <b>{password if show_password else '*' * len(password)}</b>"
-        await call.message.edit_text(text=password_text, reply_markup=inline.numbers_buttons)
+        if password:
+            password_text += f"Parol: <b>{password if show_password else '*' * len(password)}</b>"
+            await call.message.edit_text(text=password_text, reply_markup=inline.numbers_buttons)
         await state.update_data({"show_password": show_password})
 
     elif call_data == "clear":

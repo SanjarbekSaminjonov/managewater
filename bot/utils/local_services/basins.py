@@ -25,7 +25,6 @@ async def get_list_of_basins(user: tuple, state: FSMContext, new: bool = False) 
 
 async def get_basin_by_id(user: tuple, basin_id: str, state: FSMContext) -> dict:
     basins = await get_list_of_basins(user=user, state=state)
-    await state.update_data({'current_basin_id': basin_id})
     for basin in basins:
         if basin.get('id') == basin_id:
             return basin
