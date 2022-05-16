@@ -51,10 +51,9 @@ def basin_update(request, pk):
     basin = models.Basin.objects.filter(
         belong_to=request.user).filter(pk=pk).first()
     if basin is not None:
-        basin.height = request.data.get('height')
+        basin.conf_height = request.data.get('conf_height')
         basin.save()
-        serialized_basin = serializers.BasinSerializer(basin, many=False)
-        return Response(serialized_basin.data, status=HTTP_200_OK)
+        return Response(status=HTTP_200_OK)
     else:
         return Response(status=HTTP_400_BAD_REQUEST)
 

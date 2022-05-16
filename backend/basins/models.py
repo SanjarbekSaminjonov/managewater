@@ -37,6 +37,12 @@ class Basin(models.Model):
         verbose_name="qurilma suv tubidan balandligi (santimetr)",
     )
 
+    conf_height = models.IntegerField(
+        default=0,
+        blank=True,
+        null=True
+    )
+
     latitude = models.DecimalField(
         max_digits=9,
         decimal_places=6,
