@@ -3,7 +3,7 @@ from aiogram.types import Message
 from aiogram.dispatcher import FSMContext
 
 from loader import dp, db
-from utils import backend_services, local_services
+from utils import local_services
 from utils.local_services.basins import makeup_basin_info
 from keyboards import default
 from states.basin import BasinCreateState
@@ -11,33 +11,53 @@ from states.basin import BasinCreateState
 
 @dp.message_handler(text_contains="Bekor qilish", state=BasinCreateState.all_states)
 async def cancel_adding_basin(message: Message, state: FSMContext):
-    await message.answer("Qurilma qo'shish bekor qilindi", reply_markup=default.home_sections)
+    await message.answer(
+        "Qurilma qo'shish bekor qilindi",
+        reply_markup=default.home_sections
+    )
+    await state.reset_data()
     await state.finish()
 
 
 @dp.message_handler(text_contains="Qurilma qo'shish")
 async def add_basin(message: Message):
-    await message.answer("Qurilma 'id' sini kiriting (11 xonali)", reply_markup=default.cancel)
     await BasinCreateState.id.set()
+    await message.answer(
+        "Qurilma 'id' sini kiriting (11 xonali)",
+        reply_markup=default.cancel
+    )
 
 
 @dp.message_handler(state=BasinCreateState.id)
 async def add_basin(message: Message, state: FSMContext):
-    if len(message.text) == 11:
-        await message.answer(
-            "Qurilmadagi telefon raqamni kiriting\n" +
-            "Mison uchun: <code><i>+998901234567</i></code>")
-        await BasinCreateState.next()
-        await state.update_data({'id': message.text})
+    basin_id = message.text
+    if len(basin_id) == 11:
+        basin_is_exist = await db.check_basin_is_exist(basin_id)
+        if basin_is_exist is not None:
+            await message.answer(
+                "Qurilmadagi telefon raqamni kiriting\n" +
+                "Mison uchun: <b>+998*****7777</b>")
+            await state.update_data({'id': message.text})
+            await BasinCreateState.next()
+        else:
+            await message.answer(
+                "Qurilma 'id' si noto'g'ri kiritildi.\nBunday qurilma mavjud emas.",
+                reply_markup=default.cancel
+            )
     else:
-        await message.answer("Kiritilgan id 11 xonali emas. Qayta urining")
+        await message.answer("Kiritilgan id 11 xonali emas.\nQayta kiriting")
 
 
 @dp.message_handler(state=BasinCreateState.phone)
 async def add_basin(message: Message, state: FSMContext):
-    await message.answer("Qurilmaga nom bering")
-    await BasinCreateState.next()
-    await state.update_data({'phone': message.text})
+    phone_number = message.text
+    if len(phone_number) == 13 and phone_number.startswith("+") and \
+            phone_number[1:4] == '998' and phone_number[1:].isdigit():
+        await BasinCreateState.next()
+        await message.answer("Qurilmaga nom bering")
+        await state.update_data({'phone': phone_number})
+    else:
+        await message.answer("Telefon noto'g'ri kiritildi.\nIltimos ko'rsatilgan tartibda kiriting")
 
 
 @dp.message_handler(state=BasinCreateState.name)

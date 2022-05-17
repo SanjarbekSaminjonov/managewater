@@ -1,47 +1,14 @@
-from environs import Env
+from .regions import REGIONS
+import local_settings
 
-env = Env()
-env.read_env()
+BOT_TOKEN = local_settings.BOT_TOKEN
+ADMINS = local_settings.ADMINS
+IP = local_settings.IP
+API_URL = local_settings.API_URL
 
-BOT_TOKEN = env.str("BOT_TOKEN")
-ADMINS = env.list("ADMINS")
-IP = env.str("IP")
-API_URL = env.str("API_URL")
+REGIONS = REGIONS
 
-
-REGIONS = {
-    "Andijon viloyati": None,
-    "Buxoro viloyati": None,
-    "Farg'ona viloyati": [
-        "Bog'dod tumani",
-        "Beshariq tumani",
-        "Buvayda tumani",
-        "Dang'ara tumani",
-        "Farg'ona tumani",
-        "Farg'ona shahri",
-        "Furqat tumani",
-        "Oltiariq tumani",
-        "O'zbekiston tumani",
-        "Marg'ilon shahri",
-        "Qo'qon shahri",
-        "Qo'shtepa tumani",
-        "Quvasoy shahri",
-        "Quva tumani",
-        "Rishton tumani",
-        "So'x tumani",
-        "Toshloq tumani",
-        "Uchko'prik tumani",
-        "Yozyovon tumani"
-    ],
-    "Jizzax viloyati": None,
-    "Xorazm viloyati": None,
-    "Namangan viloyati": None,
-    "Navoiy viloyati": None,
-    "Qashqadaryo viloyati": None,
-    "Qoraqalpog'iston Respublikasi": None,
-    "Samarqand viloyati": None,
-    "Sirdaryo viloyati": None,
-    "Surxondaryo viloyati": None,
-    "Toshkent viloyati": None,
-    "Toshkent shahri": None
-}
+DB_USER = local_settings.DB_USER
+DB_PASS = local_settings.DB_PASS
+DB_NAME = local_settings.DB_NAME
+DB_HOST = local_settings.DB_HOST

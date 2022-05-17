@@ -12,17 +12,11 @@ from states.users import UserLoginRegisterState
 async def bot_start(message: types.Message, state: dispatcher.FSMContext):
     await state.finish()
     await state.reset_data()
-    user_state = db.select_user(chat_id=message.from_user.id)
-    if user_state is None:
-        # text = f"🙋‍♂️ Salom {message.from_user.full_name} xush kelibsiz. \n\n"
-        # text += f"<i>Siz bizning xizmatdan birinchi marta foydalanmoqdasiz. "
-        # text += f"Shuning uchun ro'yxatdan o'tishingiz yoki o'zingizning "
-        # text += f"akkauntingizga kirishingiz kerak bo'ladi</i>",
-
+    user = await db.get_user(chat_id=str(message.from_user.id))
+    if user is None:
         text = f"🙋‍♂️ Salom {message.from_user.full_name} xush kelibsiz. \n\n"
         text += f"<i>Siz bizning xizmatdan birinchi marta foydalanmoqdasiz. "
         text += f"Shuning uchun ro'yxatdan o'tishingiz kerak bo'ladi</i>"
-
         await message.answer(
             text=text,
             reply_markup=default.login_register_confirm
@@ -30,6 +24,6 @@ async def bot_start(message: types.Message, state: dispatcher.FSMContext):
         await UserLoginRegisterState.login_register.set()
     else:
         await message.answer(
-            f"🙋‍♂️ Salom yana ko'rishganimizdan xursandman!",
+            f"🙋‍♂️ Salom {user[6]} {user[7]} yana ko'rishganimizdan xursandman!",
             reply_markup=default.home_sections
         )

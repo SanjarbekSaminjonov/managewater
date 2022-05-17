@@ -5,6 +5,24 @@ from django.contrib.auth import get_user_model
 # Create your models here.
 
 
+class BasinId(models.Model):
+
+    id = models.CharField(
+        max_length=11,
+        primary_key=True,
+        verbose_name="Qurilma 'id' si"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.id
+
+    class Meta:
+        verbose_name = "mavjud qurilma"
+        verbose_name_plural = "mavjud qurilmalar"
+
+
 class Basin(models.Model):
 
     id = models.CharField(
