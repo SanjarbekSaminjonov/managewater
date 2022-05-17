@@ -55,10 +55,10 @@ def list_of_basins(basins_list: list):
     buttons = InlineKeyboardMarkup(row_width=1)
     for basin in basins_list:
         button = InlineKeyboardButton(
-            text=basin.get('name'),
+            text=basin[2],
             callback_data=basins_list_callback.new(
                 sep="basin",
-                id=basin.get('id')
+                id=basin[0]
             )
         )
         buttons.insert(button)
@@ -131,55 +131,11 @@ def update_height_plus_minus(basin_id: str):
             ],
             [
                 InlineKeyboardButton(
-                    text="-5 sm",
+                    text="✔️ Ok",
                     callback_data=basin_update_height_callback.new(
                         sep="update_height",
                         id=basin_id,
-                        value="-5"
-                    )
-                ),
-                InlineKeyboardButton(
-                    text="+5 sm",
-                    callback_data=basin_update_height_callback.new(
-                        sep="update_height",
-                        id=basin_id,
-                        value="5"
-                    )
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    text="-10 sm",
-                    callback_data=basin_update_height_callback.new(
-                        sep="update_height",
-                        id=basin_id,
-                        value="-10"
-                    )
-                ),
-                InlineKeyboardButton(
-                    text="+10 sm",
-                    callback_data=basin_update_height_callback.new(
-                        sep="update_height",
-                        id=basin_id,
-                        value="10"
-                    )
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    text="🔙 Orqaga",
-                    callback_data=basin_update_height_callback.new(
-                        sep="update_height",
-                        id=basin_id,
-                        value="cancel"
-                    )
-                ),
-                InlineKeyboardButton(
-                    text="✔️ Saqlash",
-                    callback_data=basin_update_height_callback.new(
-                        sep="update_height",
-                        id=basin_id,
-                        value="save"
+                        value="ok"
                     )
                 )
             ]

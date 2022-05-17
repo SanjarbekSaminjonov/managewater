@@ -76,3 +76,11 @@ class Database:
     async def get_basin_by_id(self, basin_id):
         sql = 'SELECT * FROM basins_basin WHERE id = $1'
         return await self.execute(sql, basin_id, fetchrow=True)
+
+    async def get_user_basins(self, user_id):
+        sql = 'SELECT * FROM basins_basin WHERE belong_to_id = $1'
+        return await self.execute(sql, user_id, fetch=True)
+
+    async def update_basin_conf_height(self, basin_id, conf_height):
+        sql = 'UPDATE basins_basin SET conf_height = $1 WHERE id = $2'
+        return await self.execute(sql, conf_height, basin_id, execute=True)

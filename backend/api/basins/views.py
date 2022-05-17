@@ -74,11 +74,14 @@ def basin_message_create(request):
         basin.save()
         data = {
             'request': 'success',
-            'height': basin.height,
+            'height': basin.height + basin.conf_height,
             'phone': basin.phone
         }
         return Response(data, status=HTTP_201_CREATED)
-    return Response(status=HTTP_400_BAD_REQUEST)
+    data = {
+        'request': 'error',
+    }
+    return Response(data, status=HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
