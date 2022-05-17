@@ -1,4 +1,3 @@
-import json
 import logging
 import aiohttp
 from data.config import API_URL
@@ -8,11 +7,11 @@ CREATE_URL = API_URL + 'basins/create/'
 BASINS_LIST = API_URL + 'basins/all/'
 
 
-def BASIN_DETAIL(basin_id: str) -> str:
+def basin_detail_url(basin_id: str) -> str:
     return API_URL + f'basins/{basin_id}/'
 
 
-def BASIN_UPDATE(basin_id: str) -> str:
+def basin_update_url(basin_id: str) -> str:
     return API_URL + f'basins/{basin_id}/update/'
 
 
@@ -40,7 +39,7 @@ async def get_basins_list(user: tuple) -> list:
 async def get_basin(user: tuple, basin_id: str) -> dict:
     auth = basic_auth(user)
     async with aiohttp.ClientSession(auth=auth) as session:
-        async with session.get(BASIN_DETAIL(basin_id)) as resp:
+        async with session.get(basin_detail_url(basin_id)) as resp:
             if resp.status == 200:
                 return await resp.json()
             logging.error(await resp.text())
@@ -50,7 +49,7 @@ async def get_basin(user: tuple, basin_id: str) -> dict:
 async def set_basin_height(user: tuple, basin_id: str, data: dict) -> dict:
     auth = basic_auth(user)
     async with aiohttp.ClientSession(auth=auth) as session:
-        async with session.post(BASIN_UPDATE(basin_id=basin_id), json=data) as resp:
+        async with session.post(basin_update_url(basin_id=basin_id), json=data) as resp:
             if resp.status == 200:
                 return await resp.json()
             return {}

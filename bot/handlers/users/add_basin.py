@@ -34,14 +34,21 @@ async def add_basin(message: Message, state: FSMContext):
     if len(basin_id) == 11:
         basin_is_exist = await db.check_basin_is_exist(basin_id)
         if basin_is_exist is not None:
-            await message.answer(
-                "Qurilmadagi telefon raqamni kiriting\n" +
-                "Mison uchun: <b>+998*****7777</b>")
-            await state.update_data({'id': message.text})
-            await BasinCreateState.next()
+            basin = await db.get_basin_by_id(basin_id)
+            if basin is not None:
+                await message.answer(
+                    "Bu qurilma allaqachon ro'yxatdan o'tgan.\nQayta kiriting",
+                    reply_markup=default.cancel
+                )
+            else:
+                await message.answer(
+                    "Qurilmadagi telefon raqamni kiriting\n" +
+                    "Mison uchun: <b>+998*****7777</b>")
+                await state.update_data({'id': message.text})
+                await BasinCreateState.next()
         else:
             await message.answer(
-                "Qurilma 'id' si noto'g'ri kiritildi.\nBunday qurilma mavjud emas.",
+                "Qurilma 'id' si noto'g'ri kiritildi.\nBunday qurilma mavjud emas. Qayta kiriting",
                 reply_markup=default.cancel
             )
     else:
@@ -51,8 +58,7 @@ async def add_basin(message: Message, state: FSMContext):
 @dp.message_handler(state=BasinCreateState.phone)
 async def add_basin(message: Message, state: FSMContext):
     phone_number = message.text
-    if len(phone_number) == 13 and phone_number.startswith("+") and \
-            phone_number[1:4] == '998' and phone_number[1:].isdigit():
+    if len(phone_number) == 13 and phone_number.startswith("+998") and phone_number[1:].isdigit():
         await BasinCreateState.next()
         await message.answer("Qurilmaga nom bering")
         await state.update_data({'phone': phone_number})
@@ -62,7 +68,7 @@ async def add_basin(message: Message, state: FSMContext):
 
 @dp.message_handler(state=BasinCreateState.name)
 async def add_basin(message: Message, state: FSMContext):
-    await message.answer("Qurilmaning balandligini kiriting (santimetr)")
+    await message.answer("Qurilmaning standart balandligini kiriting (santimetr)")
     await BasinCreateState.next()
     await state.update_data({'name': message.text})
 
@@ -110,19 +116,12 @@ async def add_basin(message: Message, state: FSMContext):
         "Qurilma qurilma ma'lumotlari saqlanmoqda . . ."
     )
     data = await state.get_data()
-    user = db.select_user(chat_id=message.from_user.id)
     try:
-        resp = await backend_services.basins.add_basin(user=user, data=data)
         await msg.delete()
-        if resp == 201:
-            await message.answer("Jarayon yakunlandi.", reply_markup=default.home_sections)
-            await local_services.basins.get_list_of_basins(user=user, state=state, new=True)
-        elif resp == 400:
-            await message.answer(
-                "Bu qurilma allaqachon ro'yxatdan o'tkazilgan.", reply_markup=default.home_sections)
-        else:
-            await message.answer(
-                "Ma'lumotlarni saqlashda xatolik yuz berdi", reply_markup=default.home_sections)
+        user = await db.get_user(chat_id=str(message.from_user.id))
+        data['belong_to_id'] = user[0]
+        await db.add_basin(data)
+        await message.answer("Qurilma muvaffaqiyatli qo'shildi", reply_markup=default.home_sections)
     except Exception as err:
         logging.error(err)
         await message.answer(

@@ -48,10 +48,31 @@ class Database:
         return sql, tuple(parameters.values())
 
     async def get_user(self, **kwargs):
-        sql = "SELECT * FROM users_customuser WHERE "
+        sql = 'SELECT * FROM users_customuser WHERE '
         sql, parameters = self.format_args(sql, parameters=kwargs)
         return await self.execute(sql, *parameters, fetchrow=True)
 
     async def check_basin_is_exist(self, basin_id):
-        sql = "SELECT * FROM basins_basinid WHERE id = $1"
+        sql = 'SELECT * FROM basins_basinid WHERE id = $1'
+        return await self.execute(sql, basin_id, fetchrow=True)
+
+    async def add_basin(self, data):
+        id = data.get('id')
+        phone = data.get('phone')
+        name = data.get('name')
+        height = data.get('height')
+        latitude = data.get('latitude', None)
+        longitude = data.get('longitude', None)
+        belong_to_id = data.get('belong_to_id')
+        conf_height = 0
+        sql = '''
+            INSERT INTO
+                basins_basin (id, phone, name, height, latitude, longitude, belong_to_id, conf_height)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        '''
+        return await self.execute(
+            sql, id, phone, name, height, latitude, longitude, belong_to_id, conf_height, execute=True)
+
+    async def get_basin_by_id(self, basin_id):
+        sql = 'SELECT * FROM basins_basin WHERE id = $1'
         return await self.execute(sql, basin_id, fetchrow=True)
