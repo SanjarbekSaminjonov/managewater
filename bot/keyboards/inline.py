@@ -1,12 +1,12 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.callback_data import CallbackData
 
-
 basins_list_callback = CallbackData("basin_manage", "sep", "id")
 basin_manage_callback = CallbackData("basin_manage", "action", "id")
 basin_update_height_callback = CallbackData(
     "basin_manage", "sep", "id", "value")
-
+basin_statistics_callback = CallbackData("basin_manage", "action", "id")
+back_to_statistics_callback = CallbackData("basin_manage", "action", "id")
 
 numbers_buttons = InlineKeyboardMarkup(
     inline_keyboard=[
@@ -70,7 +70,7 @@ def manage_basin(basin_id: str):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="⚙️ Balandlikni o'zgartirish",
+                    text="⚙️Balandlikni o'zgartirish",
                     callback_data=basin_manage_callback.new(
                         action="update_height",
                         id=basin_id
@@ -81,7 +81,7 @@ def manage_basin(basin_id: str):
                 InlineKeyboardButton(
                     text="📊 Statistikani ko'rish",
                     callback_data=basin_manage_callback.new(
-                        action="messages",
+                        action="statistics",
                         id=basin_id
                     )
                 )
@@ -136,6 +136,47 @@ def update_height_plus_minus(basin_id: str):
                         sep="update_height",
                         id=basin_id,
                         value="ok"
+                    )
+                )
+            ]
+        ]
+    )
+
+
+def statistics_types(basin_id: str):
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="ℹ️ Oxirgi xabar",
+                    callback_data=basin_statistics_callback.new(
+                        action="last_message",
+                        id=basin_id
+                    )
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="🔙 Orqaga",
+                    callback_data=basin_statistics_callback.new(
+                        action="back_to_manage_basin",
+                        id=basin_id
+                    )
+                )
+            ]
+        ]
+    )
+
+
+def back_to_statistics_types(basin_id: str):
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="🔙 Orqaga",
+                    callback_data=back_to_statistics_callback.new(
+                        action="back_to_statistics",
+                        id=basin_id
                     )
                 )
             ]

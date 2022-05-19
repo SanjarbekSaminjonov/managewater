@@ -18,7 +18,6 @@ def is_already_user(request):
         return Response(status=HTTP_400_BAD_REQUEST)
     if get_user_model().objects.filter(chat_id=chat_id).exists():
         return Response(status=HTTP_200_OK)
-    print(chat_id)
     return Response(status=HTTP_404_NOT_FOUND)
 
 

@@ -4,7 +4,7 @@ from aiogram.dispatcher import FSMContext
 
 from loader import dp, db
 from utils import local_services
-from utils.local_services.basins import makeup_basin_info
+from utils.local_services.basins import makeup_basin_info_pre_save
 from keyboards import default
 from states.basin import BasinCreateState
 
@@ -88,7 +88,7 @@ async def add_basin(message: Message, state: FSMContext):
 async def add_basin(message: Message, state: FSMContext):
     data = await state.get_data()
     await message.answer(
-        f"{makeup_basin_info(data)}\n\n"
+        f"{makeup_basin_info_pre_save(data)}\n\n"
         "Qurilma ma'lumotlar to'g'rimi?",
         reply_markup=default.yes_no_buttons
     )
@@ -99,7 +99,7 @@ async def add_basin(message: Message, state: FSMContext):
 async def add_basin(message: Message, state: FSMContext):
     data = await state.get_data()
     await message.answer(
-        f"{makeup_basin_info(data)}\n\n"
+        f"{makeup_basin_info_pre_save(data)}\n\n"
         "Qurilma ma'lumotlar to'g'rimi?",
         reply_markup=default.yes_no_buttons
     )

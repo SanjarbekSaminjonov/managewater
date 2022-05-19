@@ -1,16 +1,12 @@
-from typing import Union
-
 import asyncpg
-from asyncpg import Connection
-from asyncpg.pool import Pool
-
+from typing import Union
 from data import config
 
 
 class Database:
 
     def __init__(self):
-        self.pool: Union[Pool, None] = None
+        self.pool: Union[asyncpg.pool.Pool, None] = None
 
     async def create_pool(self):
         self.pool = await asyncpg.create_pool(
@@ -20,15 +16,10 @@ class Database:
             database=config.DB_NAME
         )
 
-    async def execute(
-        self, command, *args,
-        fetch: bool = False,
-        fetchval: bool = False,
-        fetchrow: bool = False,
-        execute: bool = False
-    ):
+    async def execute(self, command, *args, fetch: bool = False,
+                      fetchval: bool = False, fetchrow: bool = False, execute: bool = False):
         async with self.pool.acquire() as connection:
-            connection: Connection
+            connection: asyncpg.Connection
             async with connection.transaction():
                 if fetch:
                     result = await connection.fetch(command, *args)
@@ -57,6 +48,7 @@ class Database:
         return await self.execute(sql, basin_id, fetchrow=True)
 
     async def add_basin(self, data):
+
         id = data.get('id')
         phone = data.get('phone')
         name = data.get('name')
@@ -64,7 +56,9 @@ class Database:
         latitude = data.get('latitude', None)
         longitude = data.get('longitude', None)
         belong_to_id = data.get('belong_to_id')
+
         conf_height = 0
+
         sql = '''
             INSERT INTO
                 basins_basin (id, phone, name, height, latitude, longitude, belong_to_id, conf_height)
@@ -84,3 +78,13 @@ class Database:
     async def update_basin_conf_height(self, basin_id, conf_height):
         sql = 'UPDATE basins_basin SET conf_height = $1 WHERE id = $2'
         return await self.execute(sql, conf_height, basin_id, execute=True)
+
+    async def get_basin_last_message(self, basin_id):
+        sql = 'SELECT * FROM basins_basinmessage WHERE basin_id = $1 ORDER BY id DESC LIMIT 1'
+        return await self.execute(sql, basin_id, fetchrow=True)
+
+    # async def get_basin_messages_for_days(self, basin_id, days):
+    #     sql = '''
+    #         SELECT * FROM basins_basinmessage WHERE basin_id = $1 AND created_at > NOW() - INTERVAL '{} days'
+    #     '''.format(days)
+    #     return await self.execute(sql, basin_id, fetch=True)
