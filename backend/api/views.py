@@ -12,7 +12,7 @@ def home(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def overview(request):
-    url = 'https://managewater.pythonanywhere.com/api/v1/'
+    url = 'https://example.com/api/v1/'
 
     if settings.DEBUG:
         url = 'http://127.0.0.1:8000/api/v1/'
@@ -21,22 +21,22 @@ def overview(request):
         'API url': url,
 
         'Users': {
-            'Check': url + 'users/check/',
+            # 'Check': url + 'users/check/',
             'Create': url + 'users/create/',
-            'Update': url + 'users/update/'
+            # 'Update': url + 'users/update/'
         },
 
-        'Basins': {
-            'List': url + 'basins/all/',
-            'Create': url + 'basins/create/',
-            'Detail': url + 'basins/basin_id/',
-            'Update': url + 'basins/basin_id/update/',
-        },
+        # 'Basins': {
+        #     'List': url + 'basins/all/',
+        #     'Create': url + 'basins/create/',
+        #     'Detail': url + 'basins/basin_id/',
+        #     'Update': url + 'basins/basin_id/update/',
+        # },
 
         'Basin messages': {
-            'Message List': url + 'basins/messages/all/',
+            # 'Message List': url + 'basins/messages/all/',
             'Message Create': url + 'basins/messages/create/',
-            'Message Detail': url + 'basins/messages/message_id/',
+            # 'Message Detail': url + 'basins/messages/message_id/',
         },
     }
 

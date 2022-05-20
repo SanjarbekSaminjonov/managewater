@@ -10,15 +10,15 @@ from rest_framework.status import (
 )
 
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def is_already_user(request):
-    chat_id = request.data.get('chat_id')
-    if chat_id is None:
-        return Response(status=HTTP_400_BAD_REQUEST)
-    if get_user_model().objects.filter(chat_id=chat_id).exists():
-        return Response(status=HTTP_200_OK)
-    return Response(status=HTTP_404_NOT_FOUND)
+# @api_view(['POST'])
+# @permission_classes([AllowAny])
+# def is_already_user(request):
+#     chat_id = request.data.get('chat_id')
+#     if chat_id is None:
+#         return Response(status=HTTP_400_BAD_REQUEST)
+#     if get_user_model().objects.filter(chat_id=chat_id).exists():
+#         return Response(status=HTTP_200_OK)
+#     return Response(status=HTTP_404_NOT_FOUND)
 
 
 @api_view(['POST'])
@@ -51,17 +51,17 @@ def create_user(request):
     return Response(status=HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def change_user_chat_id(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
-    chat_id = request.data.get('chat_id')
-    if all((username, password, chat_id)):
-        user = authenticate(username=username, password=password)
-        if user is None:
-            return Response(status=HTTP_404_NOT_FOUND)
-        user.chat_id = chat_id
-        user.save()
-        return Response(status=HTTP_200_OK)
-    return Response(status=HTTP_400_BAD_REQUEST)
+# @api_view(['POST'])
+# @permission_classes([AllowAny])
+# def change_user_chat_id(request):
+#     username = request.data.get('username')
+#     password = request.data.get('password')
+#     chat_id = request.data.get('chat_id')
+#     if all((username, password, chat_id)):
+#         user = authenticate(username=username, password=password)
+#         if user is None:
+#             return Response(status=HTTP_404_NOT_FOUND)
+#         user.chat_id = chat_id
+#         user.save()
+#         return Response(status=HTTP_200_OK)
+#     return Response(status=HTTP_400_BAD_REQUEST)
