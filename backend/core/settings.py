@@ -43,7 +43,6 @@ INSTALLED_APPS = [
 
     # 3rd party apps
     'rest_framework',
-    'rest_framework_swagger',
     'corsheaders',
 
     # local apps
