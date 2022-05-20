@@ -1,4 +1,3 @@
-from distutils.command.build_py import build_py
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 yes_no_buttons = ReplyKeyboardMarkup(
@@ -13,8 +12,7 @@ yes_no_buttons = ReplyKeyboardMarkup(
 
 login_register_confirm = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton("Ro'yxatdan o'tish")],
-        # [KeyboardButton("Eski akkauntimga kirish")]
+        [KeyboardButton("Ro'yxatdan o'tish")]
     ],
     resize_keyboard=True
 )
@@ -54,11 +52,7 @@ location = ReplyKeyboardMarkup(
 home_sections = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton("Qurilma qo'shish")],
-        [KeyboardButton("Mening qurilmalarim")],
-        [
-            KeyboardButton("Button"),
-            KeyboardButton("Button"),
-        ]
+        [KeyboardButton("Mening qurilmalarim")]
     ],
     resize_keyboard=True
 )

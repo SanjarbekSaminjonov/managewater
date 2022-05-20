@@ -25,13 +25,13 @@ def makeup_basin_message_info(basin, basin_message) -> str:
     dt = dt.strftime("%H:%M | %d.%m.%Y")
     text = str()
     text += f"🔵 Qurilma nomi: <b>{basin[2]}</b>\n\n"
-    text += f"-- Suvdan balandligi: <b>{basin_message[1]}</b>\n"
-    text += f"-- Suv sathidan balandligi: <b>{basin_message[2]}</b>\n"
-    text += f"-- O'tayotgan suv miqdori: <b>{basin_message[3]} litr/sekund</b>\n"
-    text += f"-- O'tayotgan suv miqdori: <b>{basin_message[4]} metr kub/soat</b>\n"
-    text += f"-- Jami o'tgan suv miqdori: <b>{int(basin_message[5])} metr kub</b>\n"
-    text += f"-- Batareya quvvati: <b>{basin_message[6]} volt</b>\n"
-    text += f"-- Tarmoq ko'rsatkichi: <b>{basin_message[7]} volt</b>\n"
-    text += f"-- Xabar vaqti: <b>{dt}</b>\n"
+    text += f"📏  Suvdan qurilma balandligi: <b>{basin_message[1]} sm</b>\n"
+    text += f"📏  Suv sathidan balandligi: <b>{basin_message[2]} sm</b>\n"
+    text += f"🌊  O'tayotgan suv miqdori: <b>{basin_message[3]} litr/sekund</b>\n"
+    text += f"🌊  O'tayotgan suv miqdori: <b>{basin_message[4]} m³/soat</b>\n"
+    text += f"📈  Jami o'tayotgan suv miqdori: <b>{int(basin_message[5])} m³</b>\n"
+    text += f"🔋  Batareya quvvati: <b>{basin_message[6]} %</b>\n"
+    text += f"📡  GPRS Antena kuchi: <b>{basin_message[7]} volt</b>\n"
+    text += f"📆  So'ngi o'lchangan vaqti <b>{dt}</b>\n"
 
     return text

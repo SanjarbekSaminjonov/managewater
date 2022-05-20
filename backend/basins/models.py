@@ -121,7 +121,7 @@ class BasinMessage(models.Model):
     )
 
     bat = models.DecimalField(
-        max_digits=4,
+        max_digits=5,
         decimal_places=2,
         verbose_name="batareya quvvati (volt)"
     )
