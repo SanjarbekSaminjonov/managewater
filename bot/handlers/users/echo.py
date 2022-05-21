@@ -9,8 +9,8 @@ from states.users import UserLoginRegisterState
 # Echo bot
 @dp.message_handler(state=None)
 async def bot_echo(message: types.Message, state: FSMContext):
-    user_state = db.select_user(chat_id=message.from_user.id)
-    if user_state is None:
+    user = await db.get_user(chat_id=str(message.from_user.id))
+    if user is None:
         await message.answer(
             f"🙋‍♂️ Xurmatli {message.from_user.full_name}. \n\n"
             f"<i>Siz botda ro'yxatdan o'tmagansiz.\n"
