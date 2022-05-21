@@ -21,17 +21,21 @@ def makeup_basin_info(data) -> str:
 
 
 def makeup_basin_message_info(basin, basin_message) -> str:
+    text = str()
+
+    bat = basin_message[6]
+    bat = round((bat - 3.70) / 0.42 * 100)
     dt = basin_message[10] + datetime.timedelta(hours=5)
     dt = dt.strftime("%H:%M | %d.%m.%Y")
-    text = str()
+
     text += f"🔵 Qurilma nomi: <b>{basin[2]}</b>\n\n"
     text += f"📏  Suvdan qurilma balandligi: <b>{basin_message[1]} sm</b>\n"
     text += f"📏  Suv sathidan balandligi: <b>{basin_message[2]} sm</b>\n"
     text += f"🌊  O'tayotgan suv miqdori: <b>{basin_message[3]} litr/sekund</b>\n"
     text += f"🌊  O'tayotgan suv miqdori: <b>{basin_message[4]} m³/soat</b>\n"
     text += f"📈  Jami o'tayotgan suv miqdori: <b>{int(basin_message[5])} m³</b>\n"
-    text += f"🔋  Batareya quvvati: <b>{basin_message[6]} %</b>\n"
-    text += f"📡  GPRS Antena kuchi: <b>{basin_message[7]} volt</b>\n"
+    text += f"🔋  Batareya quvvati: <b>{bat} %</b>\n"
+    text += f"📡  GPRS Antena kuchi: <b>{basin_message[7]} net</b>\n"
     text += f"📆  So'ngi o'lchangan vaqti <b>{dt}</b>\n"
 
     return text

@@ -7,7 +7,7 @@ from keyboards import inline
 from data.config import ADMINS
 
 
-@dp.message_handler(text_contains="Mening qurilmalar")
+@dp.message_handler(text_contains="Mening qurilmalarim")
 async def list_basins(message: Message):
     msg = await message.answer("Ma'lumotlar olinmoqda . . .")
     if str(message.from_user.id) in ADMINS:

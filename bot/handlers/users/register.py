@@ -28,7 +28,8 @@ async def register(message: Message):
 async def register(message: Message, state: FSMContext):
     await UserRegisterState.next()
     await message.answer("Ismingizni kiriting", reply_markup=default.cancel)
-    await state.update_data({'username': message.contact.phone_number})
+    phone = message.contact.phone_number
+    await state.update_data({'username': phone if phone.startswith('+') else '+' + phone})
 
 
 @dp.message_handler(state=UserRegisterState.first_name)
@@ -128,7 +129,7 @@ async def register(call: CallbackQuery, state: FSMContext):
             await call.message.delete()
             await call.message.answer(
                 text=local_services.users.makeup_user_info(data=data) +
-                "\n\nBarcha ma'lumotlar to'g'rimi?",
+                     "\n\nBarcha ma'lumotlar to'g'rimi?",
                 reply_markup=default.yes_no_buttons
             )
 

@@ -71,7 +71,7 @@ async def list_of_basins_for_admin(basins_list: list):
     for basin in basins_list:
         user = await db.get_user(id=basin[6])
         button = InlineKeyboardButton(
-            text=f"{basin[2]} - {user[4]} - {user[5]} {user[6]}",
+            text=f"{basin[2]} | {user[4]} | {user[13]}",
             callback_data=basins_list_callback.new(
                 sep="basin",
                 id=basin[0]

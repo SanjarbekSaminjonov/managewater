@@ -14,9 +14,6 @@ def home(request):
 def overview(request):
     url = 'https://example.com/api/v1/'
 
-    if settings.DEBUG:
-        url = 'http://127.0.0.1:8000/api/v1/'
-
     urls_map = {
         'API url': url,
 
