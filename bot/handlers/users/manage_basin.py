@@ -3,6 +3,7 @@ from aiogram.types import CallbackQuery
 
 from loader import dp, db
 from keyboards import inline
+from data.config import ADMINS
 
 
 @dp.callback_query_handler(inline.basin_manage_callback.filter(action="update_height"))
@@ -37,16 +38,29 @@ async def basin_location(call: CallbackQuery):
 
 @dp.callback_query_handler(inline.basin_manage_callback.filter(action="back_to_basins"))
 async def back_to_basins_list(call: CallbackQuery):
-    user = await db.get_user(chat_id=str(call.from_user.id))
-    basins = await db.get_user_basins(user[0])
-    try:
-        if len(basins):
-            await call.message.edit_text(
-                "Sizdagi qurilmalar ro'yxati", reply_markup=inline.list_of_basins(basins))
-        else:
-            await call.message.edit_text("Sizda ro'yxatdan qurilmalar yo'q")
-    except Exception as err:
-        logging.error(err)
-        await call.message.edit_text("Ma'lumotlani olishning imkoni bo'lmadi")
+    if str(call.from_user.id) in ADMINS:
+        try:
+            basins = await db.get_basins()
+            buttons = await inline.list_of_basins_for_admin(basins)
+            if len(basins):
+                await call.message.edit_text(
+                    "Barcha qurilmalar ro'yxati", reply_markup=buttons)
+            else:
+                await call.message.edit_text("Ro'yxatdan qurilmalar yo'q")
+        except Exception as err:
+            logging.error(err)
+            await call.message.edit_text("Ma'lumotlani olishning imkoni bo'lmadi")
+    else:
+        try:
+            user = await db.get_user(chat_id=str(call.from_user.id))
+            basins = await db.get_user_basins(user[0])
+            if len(basins):
+                await call.message.edit_text(
+                    "Sizdagi qurilmalar ro'yxati", reply_markup=inline.list_of_basins(basins))
+            else:
+                await call.message.edit_text("Sizda ro'yxatdan qurilmalar yo'q")
+        except Exception as err:
+            logging.error(err)
+            await call.message.edit_text("Ma'lumotlani olishning imkoni bo'lmadi")
     await call.answer(cache_time=2)
 

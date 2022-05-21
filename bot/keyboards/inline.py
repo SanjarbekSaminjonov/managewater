@@ -65,6 +65,22 @@ def list_of_basins(basins_list: list):
     return buttons
 
 
+async def list_of_basins_for_admin(basins_list: list):
+    from loader import db
+    buttons = InlineKeyboardMarkup(row_width=1)
+    for basin in basins_list:
+        user = await db.get_user(id=basin[6])
+        button = InlineKeyboardButton(
+            text=f"{basin[2]} - {user[4]} - {user[5]} {user[6]}",
+            callback_data=basins_list_callback.new(
+                sep="basin",
+                id=basin[0]
+            )
+        )
+        buttons.insert(button)
+    return buttons
+
+
 def manage_basin(basin_id: str):
     return InlineKeyboardMarkup(
         inline_keyboard=[
