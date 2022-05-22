@@ -1,6 +1,4 @@
-import logging
 from aiogram.types import CallbackQuery
-
 from loader import dp, db
 from utils.local_services.basins import makeup_basin_info, makeup_basin_message_info
 from keyboards import inline
@@ -31,4 +29,5 @@ async def back_to_statistics(call: CallbackQuery):
     basin_id = call.data.split(':')[-1]
     basin = await db.get_basin_by_id(basin_id)
     text = makeup_basin_info(basin)
-    await call.message.edit_text(text, reply_markup=inline.statistics_types(basin_id))
+    await call.message.edit_reply_markup()
+    await call.message.answer(text, reply_markup=inline.statistics_types(basin_id))
