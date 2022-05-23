@@ -173,6 +173,15 @@ def statistics_types(basin_id: str):
             ],
             [
                 InlineKeyboardButton(
+                    text="📊 To'liq statistika",
+                    callback_data=basin_statistics_callback.new(
+                        action="excel_file",
+                        id=basin_id
+                    )
+                )
+            ],
+            [
+                InlineKeyboardButton(
                     text="🔙 Orqaga",
                     callback_data=basin_statistics_callback.new(
                         action="back_to_manage_basin",

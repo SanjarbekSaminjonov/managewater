@@ -87,8 +87,18 @@ class Database:
         sql = 'SELECT * FROM basins_basinmessage WHERE basin_id = $1 ORDER BY id DESC LIMIT 1'
         return await self.execute(sql, basin_id, fetchrow=True)
 
-    # async def get_basin_messages_for_days(self, basin_id, days):
-    #     sql = '''
-    #         SELECT * FROM basins_basinmessage WHERE basin_id = $1 AND created_at > NOW() - INTERVAL '{} days'
-    #     '''.format(days)
-    #     return await self.execute(sql, basin_id, fetch=True)
+    async def get_basin_messages_between_dates(self, basin_id, start_date, end_date):
+        sql = 'SELECT * FROM basins_basinmessage WHERE basin_id = $1 AND created_at between $2 and $3'
+        return await self.execute(sql, basin_id, start_date, end_date, fetch=True)
+
+    async def get_basin_messages_after_date(self, basin_id, start_date):
+        sql = 'SELECT * FROM basins_basinmessage WHERE basin_id = $1 AND created_at >= $2'
+        return await self.execute(sql, basin_id, start_date, fetch=True)
+
+    async def get_basin_messages_before_date(self, basin_id, end_date):
+        sql = 'SELECT * FROM basins_basinmessage WHERE basin_id = $1 AND created_at <= $2'
+        return await self.execute(sql, basin_id, end_date, fetch=True)
+
+    async def get_basin_messages(self, basin_id):
+        sql = 'SELECT * FROM basins_basinmessage WHERE basin_id = $1'
+        return await self.execute(sql, basin_id, fetch=True)
