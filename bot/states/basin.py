@@ -8,3 +8,7 @@ class BasinCreateState(StatesGroup):
     height = State()
     location = State()
     save_basin = State()
+
+
+class BeWatcher(StatesGroup):
+    confirmation = State()

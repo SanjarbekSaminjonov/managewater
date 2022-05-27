@@ -128,8 +128,7 @@ async def register(call: CallbackQuery, state: FSMContext):
             await UserRegisterState.next()
             await call.message.delete()
             await call.message.answer(
-                text=local_services.users.makeup_user_info(data=data) +
-                     "\n\nBarcha ma'lumotlar to'g'rimi?",
+                text=local_services.users.makeup_user_info(data=data) + "\n\nBarcha ma'lumotlar to'g'rimi?",
                 reply_markup=default.yes_no_buttons
             )
 

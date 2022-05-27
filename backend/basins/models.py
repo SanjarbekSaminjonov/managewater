@@ -148,3 +148,11 @@ class BasinMessage(models.Model):
     class Meta:
         verbose_name = 'qurilma ma\'lumoti'
         verbose_name_plural = 'qurilma ma\'lumotlari'
+
+
+class AdditionalWatcher(models.Model):
+    watcher = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    basin = models.ForeignKey(Basin, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.basin.id} - {self.watcher.username}'

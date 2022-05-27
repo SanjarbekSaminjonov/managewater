@@ -54,6 +54,10 @@ async def back_to_basins_list(call: CallbackQuery):
         try:
             user = await db.get_user(chat_id=str(call.from_user.id))
             basins = await db.get_user_basins(user[0])
+            watched_basins = await db.get_watched_basins_by_user(user[0])
+            for watched_basin in watched_basins:
+                basin = await db.get_basin_by_id(watched_basin[1])
+                basins.append(basin)
             if len(basins):
                 await call.message.edit_text(
                     "Sizdagi qurilmalar ro'yxati", reply_markup=inline.list_of_basins(basins))
@@ -63,4 +67,3 @@ async def back_to_basins_list(call: CallbackQuery):
             logging.error(err)
             await call.message.edit_text("Ma'lumotlani olishning imkoni bo'lmadi")
     await call.answer(cache_time=2)
-

@@ -36,6 +36,14 @@ contact = ReplyKeyboardMarkup(
     ]
 )
 
+be_watcher = ReplyKeyboardMarkup(
+    resize_keyboard=True,
+    keyboard=[
+        [KeyboardButton("Ushbu qurilmani kuzatmoqchiman")],
+        [KeyboardButton("Bekor qilish")]
+    ]
+)
+
 location = ReplyKeyboardMarkup(
     resize_keyboard=True,
     keyboard=[

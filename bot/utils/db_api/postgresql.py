@@ -102,3 +102,15 @@ class Database:
     async def get_basin_messages(self, basin_id):
         sql = 'SELECT * FROM basins_basinmessage WHERE basin_id = $1'
         return await self.execute(sql, basin_id, fetch=True)
+
+    async def add_additional_watcher(self, basin_id, watcher_id):
+        sql = 'INSERT INTO basins_additionalwatcher (basin_id, watcher_id) VALUES ($1, $2)'
+        return await self.execute(sql, basin_id, watcher_id, execute=True)
+
+    async def get_additional_watcher(self, basin_id, watcher_id):
+        sql = 'SELECT * FROM basins_additionalwatcher WHERE basin_id = $1 AND watcher_id = $2'
+        return await self.execute(sql, basin_id, watcher_id, fetchrow=True)
+
+    async def get_watched_basins_by_user(self, basin_id):
+        sql = 'SELECT * FROM basins_additionalwatcher WHERE watcher_id = $1'
+        return await self.execute(sql, basin_id, fetch=True)
