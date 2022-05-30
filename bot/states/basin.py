@@ -12,3 +12,7 @@ class BasinCreateState(StatesGroup):
 
 class BeWatcher(StatesGroup):
     confirmation = State()
+
+
+class UpdateMainHeight(StatesGroup):
+    progress = State()

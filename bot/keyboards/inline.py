@@ -86,6 +86,15 @@ def manage_basin(basin_id: str):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
+                    text="✏ Ma'lumotlarni o'zgartirish",
+                    callback_data=basin_manage_callback.new(
+                        action="edit",
+                        id=basin_id
+                    )
+                )
+            ],
+            [
+                InlineKeyboardButton(
                     text="⚙️Balandlikni o'zgartirish",
                     callback_data=basin_manage_callback.new(
                         action="update_height",
@@ -124,9 +133,62 @@ def manage_basin(basin_id: str):
     )
 
 
+def edit_details(basin_id: str):
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="✏ Qurilma nomini yangilash",
+                    callback_data=basin_manage_callback.new(
+                        action="edit_name",
+                        id=basin_id
+                    )
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="📞 Telefon raqamni yangilash",
+                    callback_data=basin_manage_callback.new(
+                        action="edit_phone",
+                        id=basin_id
+                    )
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="✂ O'chirib tashlash",
+                    callback_data=basin_manage_callback.new(
+                        action="delete",
+                        id=basin_id
+                    )
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="🔙 Orqaga",
+                    callback_data=basin_manage_callback.new(
+                        action="back",
+                        id=basin_id
+                    )
+                )
+            ]
+        ]
+    )
+
+
 def update_height_plus_minus(basin_id: str):
     return InlineKeyboardMarkup(
         inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="Asosiy balandlikni o'zgartirish",
+                    callback_data=basin_update_height_callback.new(
+                        sep="update_height",
+                        value="update_main_height",
+                        id=basin_id
+                    )
+                )
+            ],
             [
                 InlineKeyboardButton(
                     text="-1 sm",

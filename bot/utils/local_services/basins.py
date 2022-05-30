@@ -24,6 +24,10 @@ def makeup_basin_message_info(basin, basin_message) -> str:
     text = str()
 
     bat = float(basin_message[6])
+    if bat > 4.12:
+        bat = 4.12
+    if bat < 3.7:
+        bat = 3.7
     bat = round((bat - 3.70) / 0.42 * 100)
     dt = basin_message[10] + datetime.timedelta(hours=5)
     dt = dt.strftime("%H:%M | %d.%m.%Y")

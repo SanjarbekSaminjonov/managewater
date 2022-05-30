@@ -6,6 +6,13 @@ from keyboards import inline
 from data.config import ADMINS
 
 
+@dp.callback_query_handler(inline.basin_manage_callback.filter(action="edit"))
+async def update_basin_height(call: CallbackQuery):
+    basin_id = call.data.split(':')[-1]
+    await call.message.edit_reply_markup(inline.edit_details(basin_id))
+    await call.answer(cache_time=1)
+
+
 @dp.callback_query_handler(inline.basin_manage_callback.filter(action="update_height"))
 async def update_basin_height(call: CallbackQuery):
     basin_id = call.data.split(':')[-1]
