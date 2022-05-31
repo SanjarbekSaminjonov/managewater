@@ -48,6 +48,20 @@ async def update_basin_height(call: CallbackQuery, state: FSMContext):
             await state.update_data({'basin_id': basin_id})
 
 
+@dp.message_handler(state=UpdateMainHeight.progress, text_contains="Bekor qilish")
+async def update_main_height(message: Message, state: FSMContext):
+    await message.answer("Bekor qilindi")
+    data = await state.get_data()
+    basin_id = data.get('basin_id')
+    if basin_id is not None:
+        basin = await db.get_basin_by_id(basin_id)
+        await message.answer(
+            local_services.basins.makeup_basin_info(basin),
+            reply_markup=default.home_sections
+        )
+    await state.finish()
+
+
 @dp.message_handler(state=UpdateMainHeight.progress)
 async def update_main_height(message: Message, state: FSMContext):
     new_height = message.text
@@ -56,12 +70,16 @@ async def update_main_height(message: Message, state: FSMContext):
         data = await state.get_data()
         basin_id = data.get('basin_id')
         await db.update_basin_main_height(basin_id, new_height)
+        await message.answer("Asosiy balandlik yangilandi!", reply_markup=default.home_sections)
         basin = await db.get_basin_by_id(basin_id)
         await message.answer(
-            "Asosiy balandlik yangilandi!\n\n" + local_services.basins.makeup_basin_info(basin),
+            local_services.basins.makeup_basin_info(basin),
             reply_markup=inline.manage_basin(basin_id)
         )
         await state.finish()
     except Exception as err:
         logging.error(err)
-        await message.answer("Qiymat noto'g'ri kiritildi. Faqat son qiymat kiriting.")
+        await message.answer(
+            "Qiymat noto'g'ri kiritildi. Faqat son qiymat kiriting.",
+            reply_markup=default.home_sections
+        )

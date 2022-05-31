@@ -70,24 +70,13 @@ async def add_basin(message: Message, state: FSMContext):
         await message.answer("Kiritilgan id 11 xonali emas.\nQayta kiriting")
 
 
-@dp.message_handler(state=BasinCreateState.phone)
-async def add_basin(message: Message, state: FSMContext):
-    phone_number = message.text
-    if len(phone_number) == 13 and phone_number.startswith("+998") and phone_number[1:].isdigit():
-        await BasinCreateState.next()
-        await message.answer("Qurilmaga nom bering")
-        await state.update_data({'phone': phone_number})
-    else:
-        await message.answer("Telefon noto'g'ri kiritildi.\nIltimos ko'rsatilgan tartibda kiriting")
-
-
 @dp.message_handler(state=BeWatcher.confirmation, text_contains="Ushbu qurilmani kuzatmoqchiman")
 async def be_watcher(message: Message, state: FSMContext):
     user = await db.get_user(chat_id=str(message.from_user.id))
     user_id = user[0]
     data = await state.get_data()
     basin_id = data.get('id')
-    is_already_watcher = await db.add_additional_watcher(basin_id=basin_id, watcher_id=user_id)
+    is_already_watcher = await db.get_additional_watcher(basin_id=basin_id, watcher_id=user_id)
     if bool(is_already_watcher):
         await message.answer(
             f"<b>Siz bu qurilmani allaqachon kuzatishni boshlagansiz.</b>",
@@ -101,6 +90,17 @@ async def be_watcher(message: Message, state: FSMContext):
         )
     await state.finish()
     await state.reset_data()
+
+
+@dp.message_handler(state=BasinCreateState.phone)
+async def add_basin(message: Message, state: FSMContext):
+    phone_number = message.text
+    if len(phone_number) == 13 and phone_number.startswith("+998") and phone_number[1:].isdigit():
+        await BasinCreateState.next()
+        await message.answer("Qurilmaga nom bering")
+        await state.update_data({'phone': phone_number})
+    else:
+        await message.answer("Telefon noto'g'ri kiritildi.\nIltimos ko'rsatilgan tartibda kiriting")
 
 
 @dp.message_handler(state=BasinCreateState.name)

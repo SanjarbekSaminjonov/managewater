@@ -39,7 +39,7 @@ async def basin_statistics_excel_file(call: CallbackQuery):
     await call.answer(cache_time=2)
 
 
-@dp.callback_query_handler(inline.back_to_statistics_callback.filter(action="back_to_statistics"))
+@dp.callback_query_handler(inline.basin_statistics_callback.filter(action="back_to_statistics"))
 async def back_to_statistics(call: CallbackQuery):
     basin_id = call.data.split(':')[-1]
     basin = await db.get_basin_by_id(basin_id)

@@ -6,7 +6,6 @@ basin_manage_callback = CallbackData("basin_manage", "action", "id")
 basin_update_height_callback = CallbackData(
     "basin_manage", "sep", "id", "value")
 basin_statistics_callback = CallbackData("basin_manage", "action", "id")
-back_to_statistics_callback = CallbackData("basin_manage", "action", "id")
 
 numbers_buttons = InlineKeyboardMarkup(
     inline_keyboard=[
@@ -261,7 +260,7 @@ def back_to_statistics_types(basin_id: str):
             [
                 InlineKeyboardButton(
                     text="🔙 Orqaga",
-                    callback_data=back_to_statistics_callback.new(
+                    callback_data=basin_statistics_callback.new(
                         action="back_to_statistics",
                         id=basin_id
                     )
