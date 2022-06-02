@@ -104,7 +104,7 @@ class Database:
         return await self.execute(sql, basin_id, end_date, fetch=True)
 
     async def get_basin_messages(self, basin_id):
-        sql = 'SELECT * FROM basins_basinmessage WHERE basin_id = $1'
+        sql = 'SELECT * FROM basins_basinmessage WHERE basin_id = $1 ORDER BY created_at'
         return await self.execute(sql, basin_id, fetch=True)
 
     async def add_additional_watcher(self, basin_id, watcher_id):
